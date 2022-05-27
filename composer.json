@@ -5,10 +5,10 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Xgbnl\\Bearer\\": "src/Bearer/"
+            "Xgbnl\\Bearer\\": "src/"
         },
         "files": [
-            "src/Bearer/Support/helpers.php"
+          "src/Support/helpers.php"
         ]
     },
     "authors": [

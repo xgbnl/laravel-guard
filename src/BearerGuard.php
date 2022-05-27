@@ -20,7 +20,7 @@ class BearerGuard extends Bearer
 
     }
 
-    public function login(Model|Authenticatable $user): void
+    public function login(Model|Authenticatable $user): array
     {
 
     }

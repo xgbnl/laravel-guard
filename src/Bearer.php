@@ -30,7 +30,7 @@ abstract class Bearer implements GuardContact
     public function __construct(
         UserProvider $provider,
         Request      $request,
-        string       $inputKey = 'access_token',
+        string       $inputKey = 'bearer_token',
         string       $storageKey = 'bearer_token',
         bool         $hash = false,
         int          $expire = 60,
