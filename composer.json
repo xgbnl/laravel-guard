@@ -1,0 +1,24 @@
+{
+    "name": "xgbnl/bearer",
+    "description": "token guard",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Xgbnl\\Bearer\\": "src/Bearer/"
+        },
+        "files": [
+            "src/Bearer/Support/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "xgbnl",
+            "email": "745502274@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "ext-http": "*"
+    }
+}
