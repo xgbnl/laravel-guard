@@ -19,11 +19,9 @@ class BearerGuard extends Bearer
         $this->forgeToken();
     }
 
-    public function expires(): void
+    public function expires(): bool
     {
-        if ($this->expire < time()) {
-            throw new InvalidArgumentException('令牌已过期，请重新登录', 403);
-        }
+        return $this->expire < time();
     }
 
     public function login(Authenticatable $user): array

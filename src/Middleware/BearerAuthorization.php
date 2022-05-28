@@ -9,8 +9,10 @@ use Closure;
 
 class BearerAuthorization extends Authorization
 {
-    public function handle(Request $request, Closure $closure, ...$guards)
+    public function handle(Request $request, Closure $next, string $role)
     {
-        // TODO: Implement handle() method.
+        $this->guard($role)->expires()->guest();
+
+        return $next($request);
     }
 }

@@ -20,9 +20,9 @@ interface StatefulGuard extends Guard
      * 确定 token 是否过期
      *
      * Determine if token expires in.
-     * @return void
+     * @return bool
      */
-    public function expires(): void;
+    public function expires(): bool;
 
     /**
      * 将用户从应用程序中注销

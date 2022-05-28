@@ -21,8 +21,8 @@ abstract class Bearer implements GuardContact
     protected readonly string $inputKey;
     protected readonly string $storageKey;
 
-    protected readonly bool $hash;
-    protected readonly int  $expire;
+    protected readonly string $encryption;
+    protected readonly int    $expire;
 
     protected Authenticatable|null $user = null;
 
@@ -31,7 +31,7 @@ abstract class Bearer implements GuardContact
         Request  $request,
         string   $inputKey,
         string   $storageKey,
-        bool     $hash,
+        string   $encryption,
         int      $expire,
     )
     {
@@ -39,7 +39,7 @@ abstract class Bearer implements GuardContact
         $this->inputKey = $inputKey;
         $this->request = $request;
         $this->storageKey = $storageKey;
-        $this->hash = $hash;
+        $this->encryption = $encryption;
         $this->expire = $expire;
     }
 
@@ -48,7 +48,7 @@ abstract class Bearer implements GuardContact
         if (!is_null($this->user)) {
             return $this->user;
         }
-
+dd($this->getTokenForRequest());
         if (is_null($accessToken = $this->getTokenForRequest())) {
             return null;
         }

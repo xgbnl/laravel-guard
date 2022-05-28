@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer\Services;
 
+use http\Exception\InvalidArgumentException;
 use Xgbnl\Bearer\Exception\BearerException;
 use Xgbnl\Bearer\Traits\CreateUserProviders;
 use Illuminate\Contracts\Foundation\Application;
@@ -30,11 +31,11 @@ final class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    public function guard(?string $name = null): GuardContact
+    public function guard(?string $role = null): GuardContact
     {
-        $name = $name ?? $this->getDefaultDriver();
+        $role = $role ?? $this->getDefaultDriver();
 
-        return $this->guards[$name] ?? $this->guards[$name] = $this->resolve($name);
+        return $this->guards[$role] ?? $this->guards[$role] = $this->resolve($role);
     }
 
     public function shouldUse(string $name): void
@@ -46,15 +47,12 @@ final class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    /**
-     * @throws BearerException
-     */
     protected function resolve(string $name): GuardContact
     {
         $config = $this->getConfig($name);
 
         if (is_null($config)) {
-            throw new BearerException("守卫角色[{$name}] 没有定义");
+            throw new InvalidArgumentException("守卫角色[{$name}] 没有定义");
         }
 
         return $this->createBearerDriver($config);
@@ -67,7 +65,7 @@ final class GuardManager implements Factory
             $this->app['request'],
             $config['input_key'] ?? 'bearer_token',
             $config['storage_key'] ?? 'bearer_token',
-            $config['hash'] ?? false,
+            $config['encryption'] ?? 'md5',
             $config['expire'] ?? 60,
         );
 

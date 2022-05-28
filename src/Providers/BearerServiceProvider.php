@@ -3,8 +3,10 @@
 namespace Xgbnl\Bearer\Providers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
 use Xgbnl\Bearer\Contracts\Factory\Factory as FactoryContract;
+use Xgbnl\Bearer\Middleware\Authorization;
 use Xgbnl\Bearer\Services\GuardManager;
 
 class BearerServiceProvider extends ServiceProvider
@@ -13,6 +15,7 @@ class BearerServiceProvider extends ServiceProvider
      * Register services.
      *
      * @return void
+     * @throws BindingResolutionException
      */
     public function register(): void
     {
@@ -23,6 +26,7 @@ class BearerServiceProvider extends ServiceProvider
     /**
      * Register guard services to app defer load
      * @return void
+     * @throws BindingResolutionException
      */
     protected function registerAuthenticator(): void
     {
@@ -31,6 +35,8 @@ class BearerServiceProvider extends ServiceProvider
         $this->app->singleton(FactoryContract::class, fn($app) => $app['bearer']);
 
         $this->app->singleton('bearer.driver', fn($app) => $app['bearer']->guard());
+
+//        $this->app->make(Authorization::class, ['auth' => $this->app[FactoryContract::class]]);
 
     }
 

@@ -10,9 +10,10 @@ interface Factory
      * 返回一个守卫器实例
      *
      * Return new a guard instance.
+     * @param string|null $role
      * @return Guard
      */
-    public function guard(): Guard;
+    public function guard(?string $role = null): Guard;
 
     /**
      * 定义应该使用的默认守卫
