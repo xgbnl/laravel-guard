@@ -1,17 +1,16 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts;
+namespace Xgbnl\Bearer\Contracts\Guard;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Xgbnl\Bearer\Contracts\Authenticatable;
 
 interface Guard
 {
     /**
      * 返回一个用户实例
-     * @return Authenticatable|Model|null
+     * @return Authenticatable|null
      */
-    public function user(): Authenticatable|Model|null;
+    public function user(): ?Authenticatable;
 
     /**
      * 确定当前用户已经过身份验证

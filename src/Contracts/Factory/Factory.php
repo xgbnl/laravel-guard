@@ -1,16 +1,22 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts;
+namespace Xgbnl\Bearer\Contracts\Factory;
 
-interface FactoryContract
+use Xgbnl\Bearer\Contracts\Guard\Guard;
+
+interface Factory
 {
     /**
-     * Return a new guard instance.
+     * 返回一个守卫器实例
+     *
+     * Return new a guard instance.
      * @return Guard
      */
     public function guard(): Guard;
 
     /**
+     * 定义应该使用的默认守卫
+     *
      * Defines the default guard that should be used.
      * @param string $name
      * @return void

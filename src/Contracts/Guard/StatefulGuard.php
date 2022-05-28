@@ -1,9 +1,8 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts;
+namespace Xgbnl\Bearer\Contracts\Guard;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
+use Xgbnl\Bearer\Contracts\Authenticatable;
 
 interface StatefulGuard extends Guard
 {
@@ -12,10 +11,10 @@ interface StatefulGuard extends Guard
      *
      * Log a user into the application.
      *
-     * @param Model|Authenticatable $user
+     * @param Authenticatable $user
      * @return array
      */
-    public function login(Model|Authenticatable $user): array;
+    public function login(Authenticatable $user): array;
 
     /**
      * 确定 token 是否过期
