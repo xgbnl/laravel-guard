@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-use Xgbnl\Bearer\Contracts\FactoryContract;
-use Xgbnl\Bearer\Contracts\GuardContact;
+use Xgbnl\Bearer\Contracts\Factory\Factory as FactoryContract;
+use Xgbnl\Bearer\Contracts\Guard\GuardContact;
+use Xgbnl\Bearer\Exception\BearerException;
 
 if (!function_exists('guard')) {
     /**

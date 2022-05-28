@@ -4,7 +4,7 @@ namespace Xgbnl\Bearer\Providers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\ServiceProvider;
-use Xgbnl\Bearer\Contracts\FactoryContract;
+use Xgbnl\Bearer\Contracts\Factory\Factory as FactoryContract;
 use Xgbnl\Bearer\Services\GuardManager;
 
 class BearerServiceProvider extends ServiceProvider

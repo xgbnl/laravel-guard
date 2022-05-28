@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer;
 
-use App\Enums\GuardEnum;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Database\Eloquent\Model;
+use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Bearer\Contracts\Provider\Provider;
 use Illuminate\Http\Request;
-use Xgbnl\Bearer\Contracts\GuardContact;
+use Xgbnl\Bearer\Contracts\Guard\GuardContact;
 use Xgbnl\Bearer\Traits\GuardHelpers;
+use Xgbnl\Bearer\Traits\RedisHelpers;
 
 abstract class Bearer implements GuardContact
 {
-    use GuardHelpers;
+    use GuardHelpers, RedisHelpers;
 
-    protected readonly UserProvider $provider;
-    protected readonly Request      $request;
+    protected readonly Provider $provider;
+    protected Request           $request;
 
     protected readonly string $inputKey;
     protected readonly string $storageKey;
@@ -25,15 +24,15 @@ abstract class Bearer implements GuardContact
     protected readonly bool $hash;
     protected readonly int  $expire;
 
-    protected Model|Authenticatable|null $user = null;
+    protected Authenticatable|null $user = null;
 
     public function __construct(
-        UserProvider $provider,
-        Request      $request,
-        string       $inputKey = 'bearer_token',
-        string       $storageKey = 'bearer_token',
-        bool         $hash = false,
-        int          $expire = 60,
+        Provider $provider,
+        Request  $request,
+        string   $inputKey,
+        string   $storageKey,
+        bool     $hash,
+        int      $expire,
     )
     {
         $this->provider = $provider;
@@ -44,7 +43,7 @@ abstract class Bearer implements GuardContact
         $this->expire = $expire;
     }
 
-    final public function user(): Model|Authenticatable|null
+    final public function user(): Authenticatable|null
     {
         if (!is_null($this->user)) {
             return $this->user;
@@ -54,9 +53,7 @@ abstract class Bearer implements GuardContact
             return null;
         }
 
-        return $this->user = $this->provider->retrieveByCredentials([
-           $this->storageKey => $this->hash ? hash('sha256',$accessToken): $accessToken
-        ]);
+        return $this->user = $this->provider->retrieveById($this->id());
     }
 
     private function getTokenForRequest(): ?string
@@ -71,5 +68,10 @@ abstract class Bearer implements GuardContact
         $accessToken = array_filter($tokens, fn($token) => !empty($token));
 
         return !empty($accessToken) ? array_shift($accessToken) : null;
+    }
+
+    final public function setRequest(Request $request)
+    {
+        $this->request = $request;
     }
 }

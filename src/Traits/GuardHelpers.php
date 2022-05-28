@@ -3,8 +3,7 @@
 namespace Xgbnl\Bearer\Traits;
 
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Model;
+use Xgbnl\Bearer\Contracts\Authenticatable;
 
 trait GuardHelpers
 {
@@ -23,10 +22,7 @@ trait GuardHelpers
         return false;
     }
 
-    /**
-     * @throws AuthenticationException
-     */
-    public function authenticate(): Model|AuthenticatableContract|null
+    public function authenticate(): Authenticatable|null
     {
         if (!is_null($user = $this->user())) {
             return $user;
