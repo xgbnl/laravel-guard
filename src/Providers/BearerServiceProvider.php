@@ -5,12 +5,17 @@ namespace Xgbnl\Bearer\Providers;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
+use Xgbnl\Bearer\Commands\BearerCommand;
 use Xgbnl\Bearer\Contracts\Factory\Factory as FactoryContract;
-use Xgbnl\Bearer\Middleware\Authorization;
 use Xgbnl\Bearer\Services\GuardManager;
 
 class BearerServiceProvider extends ServiceProvider
 {
+
+    protected array $commands = [
+        BearerCommand::class,
+    ];
+
     /**
      * Register services.
      *
@@ -35,9 +40,6 @@ class BearerServiceProvider extends ServiceProvider
         $this->app->singleton(FactoryContract::class, fn($app) => $app['bearer']);
 
         $this->app->singleton('bearer.driver', fn($app) => $app['bearer']->guard());
-
-//        $this->app->make(Authorization::class, ['auth' => $this->app[FactoryContract::class]]);
-
     }
 
     protected function registerUserResolver()
@@ -55,6 +57,15 @@ class BearerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // 发布至 config 目录
+        $this->publishes([__DIR__ . '../config/bearer.php' => config_path('bearer.php')], 'config');
+
+        $this->installCommand($this->commands);
+    }
+
+    protected function installCommand(array $commands)
+    {
+        $this->commands($commands);
     }
 
     public function provides(): array

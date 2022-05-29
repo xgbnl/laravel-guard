@@ -8,7 +8,7 @@
             "Xgbnl\\Bearer\\": "src/"
         },
         "files": [
-          "src/Support/helpers.php"
+            "src/Support/helpers.php"
         ]
     },
     "authors": [
@@ -20,5 +20,15 @@
     "minimum-stability": "dev",
     "require": {
         "ext-http": "*"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Xgbnl\\Bearer\\Providers\\BearerServiceProvider"
+            ],
+            "aliases": {
+                "bearer": "Xgbnl\\Bearer\\Facades\\Bearer"
+            }
+        }
     }
 }
