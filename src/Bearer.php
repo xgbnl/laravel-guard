@@ -19,10 +19,11 @@ abstract class Bearer implements GuardContact
     protected Request           $request;
 
     protected readonly string $inputKey;
-    protected readonly string $storageKey;
-
     protected readonly string $encryption;
-    protected readonly int    $expire;
+    protected readonly int    $expireIn;
+
+    protected string $connect;
+    protected int    $throttle;
 
     protected Authenticatable|null $user = null;
 
@@ -30,17 +31,23 @@ abstract class Bearer implements GuardContact
         Provider $provider,
         Request  $request,
         string   $inputKey,
-        string   $storageKey,
         string   $encryption,
-        int      $expire,
+        int      $expireIn,
+        string   $connect,
+        int      $throttle,
     )
     {
         $this->provider = $provider;
         $this->inputKey = $inputKey;
         $this->request = $request;
-        $this->storageKey = $storageKey;
         $this->encryption = $encryption;
-        $this->expire = $expire;
+        $this->expireIn = $expireIn;
+
+        // init redis
+        $this->connect = $connect;
+        $this->throttle = $throttle;
+
+        $this->configure($connect);
     }
 
     final public function user(): Authenticatable|null
@@ -48,21 +55,28 @@ abstract class Bearer implements GuardContact
         if (!is_null($this->user)) {
             return $this->user;
         }
-dd($this->getTokenForRequest());
+
         if (is_null($accessToken = $this->getTokenForRequest())) {
             return null;
         }
 
-        return $this->user = $this->provider->retrieveById($this->id());
+        if (empty($id = $this->redis->get($this->bcrypt($accessToken)))) {
+            return null;
+        }
+
+        if (is_null($user = $this->provider->retrieveById((int)$id))) {
+            return null;
+        }
+
+        return $this->user = $user;
     }
 
     private function getTokenForRequest(): ?string
     {
         $tokens = [
-            'query'    => $this->request->query($this->inputKey),
-            'input'    => $this->request->input($this->inputKey),
-            'auth'     => $this->request->bearerToken(),
-            'password' => $this->request->getPassword(),
+            'query'  => $this->request->query($this->inputKey),
+            'input'  => $this->request->input($this->inputKey),
+            'header' => $this->request->bearerToken(),
         ];
 
         $accessToken = array_filter($tokens, fn($token) => !empty($token));
@@ -73,5 +87,28 @@ dd($this->getTokenForRequest());
     final public function setRequest(Request $request)
     {
         $this->request = $request;
+    }
+
+    final protected function createToken(int $length = 64): string
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $alphabet .= 'abcdefghijklmnopqrstuvwxyz';
+        $alphabet .= '0123456789';
+
+        $max = strlen($alphabet);
+
+        for ($i = 0; $i < $length; $i++) {
+            $this->token .= $alphabet[random_int(0, $max - 1)];
+        }
+
+        return $this->token;
+    }
+
+    final protected function bcrypt(string $token): string
+    {
+        return match ($this->encryption) {
+            'hash' => hash('sha256', $token),
+            'md5'  => hash('md5', $token),
+        };
     }
 }

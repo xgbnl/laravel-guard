@@ -19,5 +19,11 @@ interface Provider
      * 解析返回一个构造查询器
      * @return Builder
      */
-    public function resolve():Builder;
+    public function resolve(): Builder;
+
+    /**
+     * 获取守卫名
+     * @return string
+     */
+    public function getProvider(): string;
 }

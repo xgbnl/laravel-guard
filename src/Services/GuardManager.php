@@ -61,12 +61,13 @@ final class GuardManager implements Factory
     public function createBearerDriver(array $config): GuardContact
     {
         $guard = new BearerGuard(
-            $this->createUserProvider($this->app, $config['provider']),
-            $this->app['request'],
-            $config['input_key'] ?? 'bearer_token',
-            $config['storage_key'] ?? 'bearer_token',
-            $config['encryption'] ?? 'md5',
-            $config['expire'] ?? 60,
+            provider  : $this->createUserProvider($this->app, $config['provider']),
+            request   : $this->app['request'],
+            inputKey  : $config['input_key'] ?? 'bearer_token',
+            encryption: $config['encryption'] ?? 'md5',
+            expireIn  : $config['expire'] ?? 60,
+            connect   : $this->app['config']['bearer.storage.redis.connect'],
+            throttle  : $this->app['config']['bearer.storage.redis.throttle'],
         );
 
         $this->app->refresh('request', $guard, 'setRequest');

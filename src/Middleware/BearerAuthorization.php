@@ -11,7 +11,7 @@ class BearerAuthorization extends Authorization
 {
     public function handle(Request $request, Closure $next, string $role)
     {
-        $this->guard($role)->expires()->guest();
+        $this->guard($role)->guest();
 
         return $next($request);
     }

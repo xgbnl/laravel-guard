@@ -46,9 +46,14 @@ class UserProvider implements Provider
         }
 
         if (!is_subclass_of($provider, Model::class)) {
-            throw new BearerException($provider.' is not '.Model::class.' subclass');
+            throw new BearerException($provider . ' is not ' . Model::class . ' subclass');
         }
 
         return app($provider)::query();
+    }
+
+    public function getProvider(): string
+    {
+        return $this->provider;
     }
 }

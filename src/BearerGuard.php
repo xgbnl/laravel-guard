@@ -28,14 +28,13 @@ class BearerGuard extends Bearer
     {
         $token = $this->createToken();
 
-        $bcrypt = md5($user->getAuthIdentifier() . time() . $token);
+        $bcrypt = $this->bcrypt($token);
 
-        $this->redis->set($user->getAuthIdentifier(), $bcrypt, $this->expire);
+        $this->redis->set($bcrypt,$user->getAuthIdentifier());
 
         return [
             'bearer_token' => $token,
             'token_type'   => 'Bearer',
-            'expires_in'   => $this->expire,
         ];
     }
 
