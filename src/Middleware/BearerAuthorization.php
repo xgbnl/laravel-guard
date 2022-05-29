@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer\Middleware;
 
-use Illuminate\Http\Request;
-use Closure;
+use Xgbnl\Bearer\Exception\BearerException;
 
 class BearerAuthorization extends Authorization
 {
-    public function handle(Request $request, Closure $next, string $role)
+    /**
+     * @throws BearerException
+     */
+    public function doHandle()
     {
-        $this->guard($role)->guest();
+        if ($this->guard()->guest()) {
+            throw new BearerException('请登录后重试', 403);
+        }
 
-        return $next($request);
+        if ($this->guard()->expires()) {
+            throw new BearerException('令牌已过期,请重新登录', 403);
+        }
     }
 }

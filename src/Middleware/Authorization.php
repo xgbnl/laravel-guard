@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer\Middleware;
 
-use http\Exception\InvalidArgumentException;
 use Illuminate\Http\Request;
 use Xgbnl\Bearer\Contracts\Factory\Factory;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
@@ -19,29 +18,19 @@ abstract class Authorization
         $this->auth = $auth;
     }
 
-    abstract public function handle(Request $request, \Closure $next, string $role);
-
-    final protected function guard(string $guard): self
+    public function handle(Request $request, \Closure $next, string $role)
     {
-        $this->guard = $this->auth->guard($guard);
+        $this->guard = $this->auth->guard($role);
 
-        return $this;
+        $this->doHandle();
+
+        return $next($request);
     }
 
-    final protected function guest(): self
-    {
-        if ($this->guard->guest()) {
-            throw new InvalidArgumentException('请登录后重试');
-        }
-        return $this;
-    }
+    abstract public function doHandle();
 
-    final protected function expires(): self
+    final protected function guard(): GuardContact
     {
-        if ($this->guard->expires()) {
-            throw new InvalidArgumentException('令牌已过期,请重新登录', 403);
-        }
-
-        return $this;
+        return $this->guard;
     }
 }
