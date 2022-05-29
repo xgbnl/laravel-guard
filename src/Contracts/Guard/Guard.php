@@ -40,16 +40,6 @@ interface Guard
     public function id(): mixed;
 
     /**
-     * 验证用户的凭据
-     *
-     * Validate a user's credentials.
-     *
-     * @param array $credentials
-     * @return bool
-     */
-    public function validate(array $credentials = []): bool;
-
-    /**
      * 确定守卫是否有用户实例
      *
      * Determine if the guard has a user instance.
@@ -57,4 +47,10 @@ interface Guard
      * @return bool
      */
     public function hasUser(): bool;
+
+    /**
+     * 认证用户
+     * @return Authenticatable
+     */
+    public function authenticate(): Authenticatable;
 }

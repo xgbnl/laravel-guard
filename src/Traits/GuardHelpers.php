@@ -2,33 +2,21 @@
 
 namespace Xgbnl\Bearer\Traits;
 
-use Illuminate\Auth\AuthenticationException;
 use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Bearer\Exception\BearerException;
 
 trait GuardHelpers
 {
-    public function validate(array $credentials = []): bool
+    /**
+     * @throws BearerException
+     */
+    public function authenticate(): Authenticatable
     {
-        if (empty($credentials[$this->inputKey])) {
-            return false;
+        if (!$this->check()) {
+            throw new BearerException('没有经过身份验证');
         }
 
-        $credentials = [$this->storageKey => $credentials[$this->inputKey]];
-
-        if ($this->provider->retrieveByCredentials($credentials)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function authenticate(): Authenticatable|null
-    {
-        if (!is_null($user = $this->user())) {
-            return $user;
-        }
-
-        throw new AuthenticationException('没有经过身份验证');
+        return $this->user();
     }
 
     public function hasUser(): bool

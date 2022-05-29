@@ -23,23 +23,23 @@ return [
     |选填项:
     |input_key: 前端请求key,默认值为:bearer_token
     |storage_key: 缓存key,默认值为:bearer_token
-    |hash: 如果为true,则使用hash加密验证令牌,false则不使用hash
+    |encryption: 加密方式：hash,md5
     |expire: 过期值，为每个角色令牌设定过期值
     |*/
 
     'roles' => [
         'user'     => [
-            'provider'    => 'users',
-            'hash'        => true,
-            'input_key'   => 'bearer_token',
-            'storage_key' => 'bearer_token',
+            'provider'   => 'users',
+            'encryption' => 'hash',
+            'input_key'  => 'access_token',
+            'expires_in' => 60,
         ],
-        'employee' => [
-            'provider'    => 'users',
-            'hash'        => true,
-            'input_key'   => 'bearer_token',
-            'storage_key' => 'bearer_token',
-        ],
+//        'employee' => [
+//            'provider'   => 'employees',
+//            'encryption' => 'md5',
+//            'input_key'  => 'access_token',
+//            'expires_in' => 60,
+//        ],
     ],
 
     /*
@@ -54,7 +54,7 @@ return [
 
     'providers' => [
         'users'     => App\Models\User::class,
-        'employees' => App\Models\Employee::class,
+//        'employees' => App\Models\Employee::class,
     ],
 
     /*
@@ -64,7 +64,7 @@ return [
     |将令牌存储至redis缓存，更能加快用户认证响应
     |connect: 默认连接redis的默认库，如果你需要将缓存存放
     |至其它库,那么你可以在database.php文件中进行配置
-    |throttle: 访问限制为1分钟60次
+    |throttle: 节流阀
     */
     'storage'   => [
         'redis' => [

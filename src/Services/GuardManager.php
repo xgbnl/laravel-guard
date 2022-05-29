@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer\Services;
 
-use http\Exception\InvalidArgumentException;
 use Xgbnl\Bearer\Exception\BearerException;
 use Xgbnl\Bearer\Traits\CreateUserProviders;
 use Illuminate\Contracts\Foundation\Application;
@@ -13,7 +12,7 @@ use Xgbnl\Bearer\Contracts\Factory\Factory;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
 use Closure;
 
-final class GuardManager implements Factory
+class GuardManager implements Factory
 {
     use CreateUserProviders;
 
@@ -47,15 +46,29 @@ final class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
+    /**
+     * @throws BearerException
+     */
     protected function resolve(string $name): GuardContact
     {
         $config = $this->getConfig($name);
 
         if (is_null($config)) {
-            throw new InvalidArgumentException("守卫角色[{$name}] 没有定义");
+            throw new BearerException("守卫角色[{$name}] 没有定义");
+        }
+
+        if (!isset($this->customCreators[$name])) {
+            $this->callCustomCreators($name, $config);
+        } else {
+            return $this->customCreators[$name];
         }
 
         return $this->createBearerDriver($config);
+    }
+
+    private function callCustomCreators(string $name, array $config): void
+    {
+        $this->customCreators[$name] = $this->createBearerDriver($config);
     }
 
     public function createBearerDriver(array $config): GuardContact

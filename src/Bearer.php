@@ -60,7 +60,7 @@ abstract class Bearer implements GuardContact
             return null;
         }
 
-        if (!$this->redis->exists($this->tokenKey($accessToken))) {
+        if ($this->expires()) {
             return null;
         }
 

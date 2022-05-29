@@ -23,7 +23,7 @@ class BearerGuard extends Bearer
 
     public function expires(): bool
     {
-        return $this->redis->exists($this->tokenKey($this->getTokenForRequest()));
+        return !$this->redis->exists($this->tokenKey($this->getTokenForRequest()));
     }
 
     #[ArrayShape(['bearer_token' => "string", 'token_type' => "string"])]
