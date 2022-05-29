@@ -60,18 +60,25 @@ abstract class Bearer implements GuardContact
             return null;
         }
 
-        if (empty($id = $this->redis->get($this->bcrypt($accessToken)))) {
+        if (!$this->redis->exists($this->tokenKey($accessToken))) {
             return null;
         }
 
-        if (is_null($user = $this->provider->retrieveById((int)$id))) {
+        $value = $this->redis->get($this->tokenKey($accessToken));
+        $value = json_decode($value, true);
+
+        if (!in_array($this->bcrypt($accessToken), $value)) {
+            return null;
+        }
+
+        if (is_null($user = $this->provider->retrieveById($value['id']))) {
             return null;
         }
 
         return $this->user = $user;
     }
 
-    private function getTokenForRequest(): ?string
+    final protected function getTokenForRequest(): ?string
     {
         $tokens = [
             'query'  => $this->request->query($this->inputKey),
@@ -87,28 +94,5 @@ abstract class Bearer implements GuardContact
     final public function setRequest(Request $request)
     {
         $this->request = $request;
-    }
-
-    final protected function createToken(int $length = 64): string
-    {
-        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $alphabet .= 'abcdefghijklmnopqrstuvwxyz';
-        $alphabet .= '0123456789';
-
-        $max = strlen($alphabet);
-
-        for ($i = 0; $i < $length; $i++) {
-            $this->token .= $alphabet[random_int(0, $max - 1)];
-        }
-
-        return $this->token;
-    }
-
-    final protected function bcrypt(string $token): string
-    {
-        return match ($this->encryption) {
-            'hash' => hash('sha256', $token),
-            'md5'  => hash('md5', $token),
-        };
     }
 }

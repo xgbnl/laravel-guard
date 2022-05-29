@@ -65,7 +65,7 @@ final class GuardManager implements Factory
             request   : $this->app['request'],
             inputKey  : $config['input_key'] ?? 'bearer_token',
             encryption: $config['encryption'] ?? 'md5',
-            expireIn  : $config['expire'] ?? 60,
+            expireIn  : $config['expires_in'] ?? 60,
             connect   : $this->app['config']['bearer.storage.redis.connect'],
             throttle  : $this->app['config']['bearer.storage.redis.throttle'],
         );
