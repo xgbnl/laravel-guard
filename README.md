@@ -12,7 +12,7 @@
 
 1.引入包
 ```shell
-composer require xgbnl/bearer-auth
+composer require xgbnl/bearer
 ```
 
 2. 发布
