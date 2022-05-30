@@ -10,12 +10,12 @@ if (!function_exists('guard')) {
     /**
      * Return new a role guard instance.
      * @param string|null $role
-     * @return FactoryContract|GuardContact
+     * @return GuardContact
      */
-    function guard(string $role = null): FactoryContract|GuardContact
+    function guard(string $role = null): GuardContact
     {
         if (is_null($role)) {
-            return app(FactoryContract::class);
+            return app(FactoryContract::class)->guard();
         }
 
         return app(FactoryContract::class)->guard($role);
