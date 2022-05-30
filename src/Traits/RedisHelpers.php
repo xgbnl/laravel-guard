@@ -36,7 +36,7 @@ trait RedisHelpers
         try {
             $this->redis->del([$this->tokenKey($this->getTokenForRequest())]);
         } catch (RedisException $e) {
-            throw new BearerException('清除令牌缓存失败: [ ' . $e->getMessage() . ' ]');
+            throw new BearerException('清除令牌缓存失败: [ ' . $e->getMessage() . ' ]',403);
         }
     }
 
