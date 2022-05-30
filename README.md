@@ -30,7 +30,15 @@ use Xgbnl\Bearer\Middleware\BearerAuthorization;
     ];
 
  ```
-4.路由使用
+
+4.连接redis
+```dotenv
+REDIS_HOST=redis
+REDIS_PASSWORD=123456
+REDIS_PORT=6379
+```
+
+5.路由使用中间件
 ```php 
 Route::middleware('guard:user')->get('/test',fn() => 'ok');
 ```
