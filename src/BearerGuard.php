@@ -9,9 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use JetBrains\PhpStorm\ArrayShape;
 use Xgbnl\Bearer\Contracts\Authenticatable;
 use Xgbnl\Bearer\Contracts\Provider\Provider;
+use Xgbnl\Bearer\Exception\BearerException;
+use RedisException;
 
 class BearerGuard extends Bearer
 {
+    /**
+     * @throws Exception\BearerException
+     */
     public function logout(): void
     {
         if (is_null($this->user)) {
@@ -26,6 +31,9 @@ class BearerGuard extends Bearer
         return !$this->redis->exists($this->tokenKey($this->getTokenForRequest()));
     }
 
+    /**
+     * @throws BearerException
+     */
     #[ArrayShape(['bearer_token' => "string", 'token_type' => "string"])]
     public function login(Model|Authenticatable $user): array
     {
@@ -35,10 +43,14 @@ class BearerGuard extends Bearer
 
         $tokenKey = $this->tokenKey($token);
 
-        $this->redis->set($tokenKey, json_encode(
-                ['token' => $bcrypt, 'id' => $user->getAuthIdentifier()],
-                JSON_UNESCAPED_UNICODE)
-        );
+        try {
+            $this->redis->set($tokenKey, json_encode(
+                    ['token' => $bcrypt, 'id' => $user->getAuthIdentifier()],
+                    JSON_UNESCAPED_UNICODE)
+            );
+        } catch (RedisException $e) {
+            throw new BearerException('登录失败，添加令牌缓存时出错: [ ' . $e->getMessage() . ' ]');
+        }
 
         $this->redis->expire($tokenKey, 30 * 60 * 2);
 

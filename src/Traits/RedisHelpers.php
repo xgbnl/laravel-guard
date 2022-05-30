@@ -2,8 +2,10 @@
 
 namespace Xgbnl\Bearer\Traits;
 
-use Exception;
+use Illuminate\Support\Facades\Redis as FacadeRedis;
 use Redis;
+use Xgbnl\Bearer\Exception\BearerException;
+use RedisException;
 
 trait RedisHelpers
 {
@@ -11,14 +13,31 @@ trait RedisHelpers
 
     protected ?string $token = null;
 
+    /**
+     * @throws BearerException
+     */
     protected function configure(string $name): void
     {
-        $this->redis = \Illuminate\Support\Facades\Redis::connection($name)->client();
+        try {
+            $this->redis = FacadeRedis::connection($name)->client();
+        } catch (RedisException $exception) {
+            throw new BearerException(
+                'Bearer守卫连接 redis 失败,[ ' . $exception->getMessage() . ' ] 请检查配置',
+                500
+            );
+        }
     }
 
+    /**
+     * @throws BearerException
+     */
     protected function forgeToken(): void
     {
-        $this->redis->del([$this->tokenKey($this->getTokenForRequest())]);
+        try {
+            $this->redis->del([$this->tokenKey($this->getTokenForRequest())]);
+        } catch (RedisException $e) {
+            throw new BearerException('清除令牌缓存失败: [ ' . $e->getMessage() . ' ]');
+        }
     }
 
     protected function tokenKey(string $token): string
