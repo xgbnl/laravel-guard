@@ -9,20 +9,20 @@ interface Authenticatable
      *
      * @return string
      */
-    public function getAuthIdentifierName(): string;
+    public function getModelIdentifierName(): string;
 
     /**
      * Get the unique identifier for the user.
      *
      * @return mixed
      */
-    public function getAuthIdentifier(): mixed;
+    public function getModelIdentifier(): mixed;
 
     /**
      * Get the password for the user.
      *
      * @return string|null
      */
-    public function getAuthPassword(): ?string;
+    public function getModelPassword(): ?string;
 
 }

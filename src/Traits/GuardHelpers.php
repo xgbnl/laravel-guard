@@ -36,6 +36,6 @@ trait GuardHelpers
 
     public function id(): mixed
     {
-        return $this->user()?->getAuthIdentifier();
+        return $this->user()?->getModelIdentifier();
     }
 }

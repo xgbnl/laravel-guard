@@ -45,7 +45,7 @@ class BearerGuard extends Bearer
 
         try {
             $this->redis->set($tokenKey, json_encode(
-                    ['token' => $bcrypt, 'id' => $user->getAuthIdentifier()],
+                    ['token' => $bcrypt, 'id' => $user->getModelIdentifier()],
                     JSON_UNESCAPED_UNICODE)
             );
         } catch (RedisException $e) {
