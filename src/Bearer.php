@@ -20,33 +20,29 @@ abstract class Bearer implements GuardContact
 
     protected readonly string $inputKey;
     protected readonly string $encryption;
-    protected readonly int    $expireIn;
 
-    protected string $connect;
-    protected int    $throttle;
+    protected string $connect = 'default';
 
     protected Authenticatable|null $user = null;
 
+    /**
+     * @throws Exception\BearerException
+     */
     public function __construct(
         Provider $provider,
         Request  $request,
         string   $inputKey,
         string   $encryption,
-        int      $expireIn,
         string   $connect,
-        int      $throttle,
     )
     {
         $this->provider = $provider;
         $this->inputKey = $inputKey;
         $this->request = $request;
         $this->encryption = $encryption;
-        $this->expireIn = $expireIn;
 
         // init redis
-        $this->connect = $connect;
-        $this->throttle = $throttle;
-
+        $this->connect = $connect ?? $this->connect;
         $this->configure($connect);
     }
 
@@ -60,7 +56,7 @@ abstract class Bearer implements GuardContact
             return null;
         }
 
-        if ($this->expires()) {
+        if (!$this->redis->exists($this->tokenKey($this->getTokenForRequest()))) {
             return null;
         }
 

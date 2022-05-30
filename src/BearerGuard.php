@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer;
 
-use http\Exception\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use JetBrains\PhpStorm\ArrayShape;
 use Xgbnl\Bearer\Contracts\Authenticatable;
 use Xgbnl\Bearer\Contracts\Provider\Provider;
+use Xgbnl\Bearer\Enum\Date;
 use Xgbnl\Bearer\Exception\BearerException;
 use RedisException;
 
@@ -20,7 +20,7 @@ class BearerGuard extends Bearer
     public function logout(): void
     {
         if (is_null($this->user)) {
-            throw new InvalidArgumentException('用户未登录');
+            throw new BearerException('请登录后再使用注销功能', 403);
         }
 
         $this->forgeToken();
@@ -28,7 +28,7 @@ class BearerGuard extends Bearer
 
     public function expires(): bool
     {
-        return !$this->redis->exists($this->tokenKey($this->getTokenForRequest()));
+        return $this->redis->ttl($this->tokenKey($this->getTokenForRequest())) <= 360;
     }
 
     /**
@@ -52,7 +52,8 @@ class BearerGuard extends Bearer
             throw new BearerException('登录失败，添加令牌缓存时出错: [ ' . $e->getMessage() . ' ]');
         }
 
-        $this->redis->expire($tokenKey, 30 * 60 * 2);
+        // 过期时间再延长6分钟，当小于6分钟时说明token已过期
+        $this->redis->expire($tokenKey, Date::TWO_DAYS->value + 360);
 
         return [
             'bearer_token' => $token,

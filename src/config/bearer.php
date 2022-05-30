@@ -24,22 +24,21 @@ return [
     |input_key: 前端请求key,默认值为:bearer_token
     |storage_key: 缓存key,默认值为:bearer_token
     |encryption: 加密方式：hash,md5
-    |expire: 过期值，为每个角色令牌设定过期值
+    |expire: 过期值为2天
     |*/
 
     'roles' => [
-        'user'     => [
+        'user' => [
             'provider'   => 'users',
             'encryption' => 'hash',
             'input_key'  => 'access_token',
-            'expires_in' => 60,
         ],
-//        'employee' => [
-//            'provider'   => 'employees',
-//            'encryption' => 'md5',
-//            'input_key'  => 'access_token',
-//            'expires_in' => 60,
-//        ],
+        //        'employee' => [
+        //            'provider'   => 'employees',
+        //            'encryption' => 'md5',
+        //            'input_key'  => 'access_token',
+        //            'expires_in' => 60,
+        //        ],
     ],
 
     /*
@@ -53,8 +52,8 @@ return [
     */
 
     'providers' => [
-        'users'     => App\Models\User::class,
-//        'employees' => App\Models\Employee::class,
+        'users' => App\Models\User::class,
+        //        'employees' => App\Models\Employee::class,
     ],
 
     /*
@@ -64,12 +63,11 @@ return [
     |将令牌存储至redis缓存，更能加快用户认证响应
     |connect: 默认连接redis的默认库，如果你需要将缓存存放
     |至其它库,那么你可以在database.php文件中进行配置
-    |throttle: 节流阀
+    |
     */
     'storage'   => [
         'redis' => [
-            'connect'  => 'default',
-            'throttle' => 60,
+            'connect' => 'default',
         ],
     ],
 ];
