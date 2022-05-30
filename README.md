@@ -11,16 +11,19 @@
 #### 使用
 
 1.引入包
+
 ```shell
 composer require xgbnl/bearer
 ```
 
 2. 发布
+
 ```shell
 php artisan bearer:install
 ```
 
 3.添加中间件,`app/Http/Kernel.php`
+
 ```php
 use Xgbnl\Bearer\Middleware\BearerAuthorization;
 
@@ -32,6 +35,7 @@ use Xgbnl\Bearer\Middleware\BearerAuthorization;
  ```
 
 4.连接redis
+
 ```dotenv
 REDIS_HOST=redis
 REDIS_PASSWORD=123456
@@ -39,8 +43,21 @@ REDIS_PORT=6379
 ```
 
 5.路由使用中间件
+
 ```php 
 Route::middleware('guard:user')->get('/test',fn() => 'ok');
+```
+
+你的提供者模型需要实现 `Xgbnl\Bearer\Contracts\Authenticatable`接口，`trait` 也为你实现了，直接引入使用
+
+```php
+use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Bearer\Traits\HasApiToken;
+
+class User implements Authenticatable
+{
+    use HasApiToken;
+}
 ```
 
 更多配置查看 `config/bearer.php` , 守卫器角色可以配置多个，这也就是为什么开发这个包的原因：
