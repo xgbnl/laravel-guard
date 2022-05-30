@@ -58,7 +58,7 @@ class BearerServiceProvider extends ServiceProvider
     public function boot()
     {
         // 发布至 config 目录
-        $this->publishes([__DIR__ . '../config/bearer.php' => config_path('bearer.php')], 'config');
+        $this->publishes([dirname(__DIR__) . '/config/bearer.php' => config_path('bearer.php')], 'config');
 
         $this->installCommand($this->commands);
     }
