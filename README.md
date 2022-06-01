@@ -1,15 +1,17 @@
 ### Bearer Auth
 
-![image](yuque.png)
-
 > 此项目基于 `Laravel` 开发,参考了内置的 guard 实现了一套自定义的守卫器
 >
 > 守卫器基于 `redis` 存储，不再依赖数据库，使用简单
 >
 > 已实现了中间件过滤拦截，登录，注销功能
 
+### 架构图
+
+![image](yuque.jpg)
+
 ### 使用前准备
-- 安装 reids,并安装 redis 扩展
+- 你需要安装 reids,并安装 redis 扩展
 
 ### 引入包
 
@@ -95,6 +97,5 @@ public function login()
 guard('user')->logout();
 
 ```
-
 
 更多配置请查看 `config/bearer.php`
