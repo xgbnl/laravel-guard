@@ -58,11 +58,11 @@ Route::middleware('guard:user')->get('/user',fn(Request $req) => $req->user());
 
 ```php
 use Xgbnl\Bearer\Contracts\Authenticatable;
-use Xgbnl\Bearer\Traits\HasApiToken;
+use Xgbnl\Bearer\Traits\AuthenticatableHelpers;
 
 class User implements Authenticatable
 {
-    use HasApiToken;
+    use AuthenticatableHelpers;
 }
 ```
 
