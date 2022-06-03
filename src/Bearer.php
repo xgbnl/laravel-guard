@@ -8,6 +8,7 @@ use Xgbnl\Bearer\Contracts\Authenticatable;
 use Xgbnl\Bearer\Contracts\Provider\Provider;
 use Illuminate\Http\Request;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
+use Xgbnl\Bearer\Exception\BearerException;
 use Xgbnl\Bearer\Traits\GuardHelpers;
 use Xgbnl\Bearer\Traits\RedisHelpers;
 
@@ -21,12 +22,10 @@ abstract class Bearer implements GuardContact
     protected readonly string $inputKey;
     protected readonly string $encryption;
 
-    protected string $connect = 'default';
-
     protected Authenticatable|null $user = null;
 
     /**
-     * @throws Exception\BearerException
+     * @throws BearerException
      */
     public function __construct(
         Provider $provider,
@@ -42,8 +41,7 @@ abstract class Bearer implements GuardContact
         $this->encryption = $encryption;
 
         // init redis
-        $this->connect = $connect ?? $this->connect;
-        $this->configure($connect);
+        $this->configure($this->connect = $connect ?? $this->connect);
     }
 
     final public function user(): Authenticatable|null
@@ -56,18 +54,15 @@ abstract class Bearer implements GuardContact
             return null;
         }
 
-        if (!$this->redis->exists($this->tokenKey($this->getTokenForRequest()))) {
+        if ($this->expiresIn()) {
             return null;
         }
 
-        $value = $this->redis->get($this->tokenKey($accessToken));
-        $value = json_decode($value, true);
-
-        if (!in_array($this->bcrypt($accessToken), $value)) {
+        if ($this->tokenExists($accessToken)) {
             return null;
         }
 
-        if (is_null($user = $this->provider->retrieveById($value['id']))) {
+        if (is_null($user = $this->provider->retrieveById($this->fetchUserId($accessToken)))) {
             return null;
         }
 

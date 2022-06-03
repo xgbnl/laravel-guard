@@ -18,6 +18,8 @@ trait RedisHelpers
 
     protected ?string $token = null;
 
+    protected string $connect = 'default';
+
     /**
      * When initializing configure redis connect.
      * @throws BearerException
@@ -120,5 +122,37 @@ trait RedisHelpers
             'access_token' => $originToken,
             'type'         => 'Bearer',
         ];
+    }
+
+    /**
+     * Check token if expires in .
+     * @return bool
+     */
+    final protected function expiresIn(): bool
+    {
+        return $this->redis->ttl($this->additionTokenHeader($this->getTokenForRequest())) <= 360;
+    }
+
+    /**
+     * Check token exists redis.
+     * @param string $token
+     * @return bool
+     */
+    private function tokenExists(string $token): bool
+    {
+        if (empty($cache = $this->redis->get($this->additionTokenHeader($token)))) {
+            return false;
+        }
+
+        $data = json_decode($cache, true);
+
+        return !in_array($this->encryptToken($token), $data);
+    }
+
+    private function fetchUserId(string $token): int
+    {
+        $data = $this->redis->get($this->additionTokenHeader($token));
+
+        return (int)json_decode($data, true)['id'];
     }
 }

@@ -19,7 +19,7 @@ class BearerGuard extends Bearer
     public function logout(): void
     {
         if (is_null($this->user)) {
-            throw new BearerException('未登录无法使用注销功能', 403);
+            throw new BearerException('请登录后再试', 403);
         }
 
         $this->forgeToken();
@@ -27,7 +27,7 @@ class BearerGuard extends Bearer
 
     public function expires(): bool
     {
-        return $this->redis->ttl($this->additionTokenHeader($this->getTokenForRequest())) <= 360;
+        return $this->expiresIn();
     }
 
     /**
