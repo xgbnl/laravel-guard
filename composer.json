@@ -1,34 +1,35 @@
 {
-    "name": "xgbnl/bearer",
-    "description": "token guard",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Xgbnl\\Bearer\\": "src/"
-        },
-        "files": [
-            "src/Support/helpers.php"
-        ]
+  "name": "xgbnl/bearer",
+  "description": "token guard",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Xgbnl\\Bearer\\": "src/"
     },
-    "authors": [
-        {
-            "name": "xgbnl",
-            "email": "745502274@qq.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "ext-http": "*"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Xgbnl\\Bearer\\Providers\\BearerServiceProvider"
-            ],
-            "aliases": {
-                "bearer": "Xgbnl\\Bearer\\Facades\\Bearer"
-            }
-        }
+    "files": [
+      "src/Support/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "xgbnl",
+      "email": "745502274@qq.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "ext-http": "*",
+    "ext-redis": "*"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Xgbnl\\Bearer\\Providers\\BearerServiceProvider"
+      ],
+      "aliases": {
+        "bearer": "Xgbnl\\Bearer\\Facades\\Bearer"
+      }
+    }
+  }
 }

@@ -2,8 +2,13 @@
 
 namespace Xgbnl\Bearer\Traits;
 
+use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis as FacadeRedis;
+use JetBrains\PhpStorm\ArrayShape;
 use Redis;
+use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Bearer\Enum\Date;
 use Xgbnl\Bearer\Exception\BearerException;
 use RedisException;
 
@@ -14,6 +19,7 @@ trait RedisHelpers
     protected ?string $token = null;
 
     /**
+     * When initializing configure redis connect.
      * @throws BearerException
      */
     protected function configure(string $name): void
@@ -29,23 +35,35 @@ trait RedisHelpers
     }
 
     /**
+     * Clear redis.
      * @throws BearerException
      */
     protected function forgeToken(): void
     {
         try {
-            $this->redis->del([$this->tokenKey($this->getTokenForRequest())]);
+            $this->redis->del([$this->additionTokenHeader($this->getTokenForRequest())]);
         } catch (RedisException $e) {
-            throw new BearerException('清除令牌缓存失败: [ ' . $e->getMessage() . ' ]',403);
+            throw new BearerException('清除令牌缓存失败: [ ' . $e->getMessage() . ' ]', 403);
         }
     }
 
-    protected function tokenKey(string $token): string
+    /**
+     * Generate redis key.
+     * @param string $token
+     * @return string
+     */
+    final protected function additionTokenHeader(string $token): string
     {
         return 'sys:user:token' . $token;
     }
 
-    final protected function createToken(int $length = 64): string
+    /**
+     * Create a new token.
+     * @param int $length
+     * @return string
+     * @throws Exception
+     */
+    private function createToken(int $length = 64): string
     {
         $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $alphabet .= 'abcdefghijklmnopqrstuvwxyz';
@@ -60,11 +78,47 @@ trait RedisHelpers
         return $this->token;
     }
 
-    final protected function bcrypt(string $token): string
+    /**
+     * Encrypt token.
+     * @param string $token
+     * @return string
+     */
+    private function encryptToken(string $token): string
     {
         return match ($this->encryption) {
             'hash' => hash('sha256', $token),
             'md5'  => hash('md5', $token),
         };
+    }
+
+    /**
+     * Store token to redis and login
+     * @param Model|Authenticatable $user
+     * @return array
+     * @throws Exception
+     */
+    #[ArrayShape(['access_token' => "string", 'type' => "string"])]
+    final protected function store(Model|Authenticatable $user): array
+    {
+        $originToken = $this->createToken();
+
+        $encryption = $this->encryptToken($originToken);
+
+        $key = $this->additionTokenHeader($originToken);
+
+        try {
+            $this->redis->set($key, json_encode(
+                ['token' => $encryption, 'id' => $user->getModelIdentifier()],
+                JSON_UNESCAPED_UNICODE));
+        } catch (RedisException $e) {
+            throw new BearerException('登录失败，添加令牌缓存时出错: [ ' . $e->getMessage() . ' ]');
+        }
+
+        $this->redis->expire($key, Date::TWO_DAYS->value + 360);
+
+        return [
+            'access_token' => $originToken,
+            'type'         => 'Bearer',
+        ];
     }
 }
