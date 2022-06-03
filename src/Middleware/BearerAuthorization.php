@@ -13,12 +13,13 @@ class BearerAuthorization extends Authorization
      */
     public function doHandle()
     {
-        if ($this->guard()->expires()) {
-            throw new BearerException('令牌已过期,请重新登录', 403);
-        }
 
         if ($this->guard()->guest()) {
-            throw new BearerException('请登录后重试', 403);
+            throw new BearerException('请登录', 403);
+        }
+
+        if ($this->guard()->expires()) {
+            throw new BearerException('令牌已过期,请重新登录', 403);
         }
 
     }
