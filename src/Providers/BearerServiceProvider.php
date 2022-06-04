@@ -11,10 +11,9 @@ use Xgbnl\Bearer\Services\GuardManager;
 
 class BearerServiceProvider extends ServiceProvider
 {
-
     protected array $commands = [
-        BearerCommand::class,
-    ];
+            BearerCommand::class,
+        ];
 
     /**
      * Register services.
@@ -42,7 +41,7 @@ class BearerServiceProvider extends ServiceProvider
         $this->app->singleton('bearer.driver', fn($app) => $app['bearer']->guard());
     }
 
-    protected function registerUserResolver()
+    protected function registerUserResolver(): void
     {
         $this->app->bind(
             Authenticatable::class,
@@ -55,14 +54,14 @@ class BearerServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([dirname(__DIR__) . '/config/bearer.php' => config_path('bearer.php')], 'config');
 
         $this->installCommand($this->commands);
     }
 
-    protected function installCommand(array $commands)
+    protected function installCommand(array $commands): void
     {
         $this->commands($commands);
     }

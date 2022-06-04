@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer\Services;
 
-use Xgbnl\Bearer\Exception\BearerException;
-use Xgbnl\Bearer\Traits\CreateUserProviders;
-use Illuminate\Contracts\Foundation\Application;
+use Closure;
 use Xgbnl\Bearer\BearerGuard;
 use Xgbnl\Bearer\Contracts\Factory\Factory;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
-use Closure;
+use Xgbnl\Bearer\Exception\BearerException;
+use Xgbnl\Bearer\Traits\CreateUserProviders;
+use Illuminate\Contracts\Foundation\Application;
 
 class GuardManager implements Factory
 {
@@ -49,15 +49,12 @@ class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    /**
-     * @throws BearerException
-     */
     protected function resolve(string $name): GuardContact
     {
         $config = $this->getConfig($name);
 
         if (is_null($config)) {
-            throw new BearerException("守卫角色[{$name}] 没有定义");
+            trigger(500, 'Guard role [ ' . $name . ' ] not define.');
         }
 
         if (!isset($this->customCreators[$name])) {
@@ -69,25 +66,18 @@ class GuardManager implements Factory
         return $this->createBearerDriver($config);
     }
 
-    /**
-     * @throws BearerException
-     */
     private function callCustomCreators(string $name, array $config): void
     {
         $this->customCreators[$name] = $this->createBearerDriver($config);
     }
 
-    /**
-     * @throws BearerException
-     */
     public function createBearerDriver(array $config): GuardContact
     {
         $guard = new BearerGuard(
-            provider  : $this->createUserProvider($this->app, $config['provider']),
-            request   : $this->app['request'],
-            inputKey  : $config['input_key'] ?? 'bearer_token',
-            encryption: $config['encryption'] ?? 'md5',
-            connect   : $this->app['config']['bearer.storage.redis.connect'],
+            provider    : $this->createUserProvider($this->app, $config['provider']),
+            request     : $this->app['request'],
+            repositories: $this->getRepositories(),
+            inputKey    : $config['input_key'] ?? 'bearer_token',
         );
 
         $this->app->refresh('request', $guard, 'setRequest');
@@ -110,24 +100,20 @@ class GuardManager implements Factory
         $this->app['config']['bearer.defaults.role'] = $name;
     }
 
-    /**
-     * 获取用户解析闭包
-     * @return Closure|null
-     */
     public function userResolver(): ?Closure
     {
         return $this->userResolver;
     }
 
-    /**
-     * 设置闭包引用到用户解析变量
-     * @param Closure $userResolver
-     * @return $this
-     */
     public function resolveUsersUsing(Closure $userResolver): self
     {
         $this->userResolver = $userResolver;
 
         return $this;
+    }
+
+    public function getRepositories(): Repositories
+    {
+        return new Repositories(new TokenService(), $this->app['config']['bearer.store.redis.connect']);
     }
 }

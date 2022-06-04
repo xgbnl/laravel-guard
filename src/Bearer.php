@@ -9,39 +9,29 @@ use Xgbnl\Bearer\Contracts\Provider\Provider;
 use Illuminate\Http\Request;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
 use Xgbnl\Bearer\Exception\BearerException;
+use Xgbnl\Bearer\Services\Repositories;
 use Xgbnl\Bearer\Traits\GuardHelpers;
 use Xgbnl\Bearer\Traits\RedisHelpers;
 
 abstract class Bearer implements GuardContact
 {
-    use GuardHelpers, RedisHelpers;
+    use GuardHelpers;
 
     protected readonly Provider $provider;
     protected Request           $request;
 
+    protected Repositories $repositories;
+
     protected readonly string $inputKey;
-    protected readonly string $encryption;
 
     protected Authenticatable|null $user = null;
 
-    /**
-     * @throws BearerException
-     */
-    public function __construct(
-        Provider $provider,
-        Request  $request,
-        string   $inputKey,
-        string   $encryption,
-        string   $connect,
-    )
+    public function __construct(Provider $provider, Request $request, Repositories $repositories, string $inputKey)
     {
-        $this->provider = $provider;
-        $this->inputKey = $inputKey;
-        $this->request = $request;
-        $this->encryption = $encryption;
-
-        // init redis
-        $this->configure($this->connect = $connect ?? $this->connect);
+        $this->provider     = $provider;
+        $this->inputKey     = $inputKey;
+        $this->request      = $request;
+        $this->repositories = $repositories;
     }
 
     final public function user(): Authenticatable|null
@@ -54,15 +44,15 @@ abstract class Bearer implements GuardContact
             return null;
         }
 
-        if ($this->expiresIn()) {
+        if ($this->repositories->tokenNotExists($this->getTokenForRequest())) {
             return null;
         }
 
-        if ($this->tokenExists($accessToken)) {
+        if ($this->repositories->tokenExpires($accessToken)) {
             return null;
         }
 
-        if (is_null($user = $this->provider->retrieveById($this->fetchUserId($accessToken)))) {
+        if (is_null($user = $this->provider->retrieveById($this->repositories->fetchUserId($accessToken)))) {
             return null;
         }
 
