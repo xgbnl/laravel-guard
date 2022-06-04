@@ -11,6 +11,7 @@ use Xgbnl\Bearer\Contracts\Authenticatable;
 use Xgbnl\Bearer\Enum\Date;
 use Xgbnl\Bearer\Exception\BearerException;
 use RedisException;
+use Xgbnl\Bearer\Support\ObjectWatcher;
 
 trait RedisHelpers
 {
@@ -19,8 +20,6 @@ trait RedisHelpers
     protected ?string $token = null;
 
     protected string $connect = 'default';
-
-    private array $models = []; // Store model object library
 
     /**
      * When initializing configure redis connect.
@@ -105,7 +104,7 @@ trait RedisHelpers
     final protected function store(Model|Authenticatable $user): array
     {
 
-        if (isset($this->models[$this->globleKey($user)])){
+        if (!is_null($this->modelExists($user))) {
             throw new BearerException('已登录，请勿重复操作');
         }
 
@@ -125,7 +124,7 @@ trait RedisHelpers
 
         $this->redis->expire($key, Date::TWO_DAYS->value + 360);
 
-        $this->models[$this->globleKey($user)] = $user;
+        $this->addModels($user);
 
         return [
             'access_token' => $originToken,
@@ -134,11 +133,23 @@ trait RedisHelpers
     }
 
     /**
-     * Set or get model key.
+     * Add model to repository
+     * @param Model|Authenticatable $user
+     * @return void
      */
-    private function globleKey(Model|Authenticatable $user):string
+    private function addModels(Model|Authenticatable $user): void
     {
-        return get_class($user).'.'.$user->getModelIdentifier();
+        ObjectWatcher::addModels($user);
+    }
+
+    /**
+     * Check model exists the repository
+     * @param Model|Authenticatable $user
+     * @return Model|Authenticatable|null
+     */
+    private function modelExists(Model|Authenticatable $user): Model|Authenticatable|null
+    {
+        return ObjectWatcher::modelExists($user);
     }
 
     /**
