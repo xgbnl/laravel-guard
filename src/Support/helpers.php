@@ -21,3 +21,18 @@ if (!function_exists('guard')) {
         return app(FactoryContract::class)->guard($role);
     }
 }
+
+if (!function_exists('trigger')) {
+
+    /**
+     * Trigger error
+     * @param int $code
+     * @param string $message
+     * @return never
+     * @throws BearerException
+     */
+    function trigger(int $code, string $message): never
+    {
+        throw new BearerException($message, $code);
+    }
+}

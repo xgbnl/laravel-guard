@@ -22,22 +22,17 @@ return [
     |查询构造器查询用户
     |选填项:
     |input_key: 前端请求key,默认值为:bearer_token
-    |storage_key: 缓存key,默认值为:bearer_token
-    |encryption: 加密方式：hash,md5
     |expire: 过期值为2天
     |*/
 
     'roles' => [
         'user' => [
-            'provider'   => 'users',
-            'encryption' => 'hash',
-            'input_key'  => 'access_token',
+            'provider'  => 'users',
+            'input_key' => 'access_token',
         ],
         //        'employee' => [
         //            'provider'   => 'employees',
-        //            'encryption' => 'md5',
         //            'input_key'  => 'access_token',
-        //            'expires_in' => 60,
         //        ],
     ],
 
@@ -52,8 +47,8 @@ return [
     */
 
     'providers' => [
-        'users' => App\Models\User::class,
-        //        'employees' => App\Models\Employee::class,
+//        'users' => App\Models\User::class,
+//        'employees' => App\Models\Employee::class,
     ],
 
     /*
@@ -65,7 +60,7 @@ return [
     |至其它库,那么你可以在database.php文件中进行配置
     |
     */
-    'storage'   => [
+    'store'   => [
         'redis' => [
             'connect' => 'default',
         ],
