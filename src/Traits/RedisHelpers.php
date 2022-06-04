@@ -20,6 +20,8 @@ trait RedisHelpers
 
     protected string $connect = 'default';
 
+    private array $models = []; // Store model object library
+
     /**
      * When initializing configure redis connect.
      * @throws BearerException
@@ -102,6 +104,11 @@ trait RedisHelpers
     #[ArrayShape(['access_token' => "string", 'type' => "string"])]
     final protected function store(Model|Authenticatable $user): array
     {
+
+        if (isset($this->models[$this->globleKey($user)])){
+            throw new BearerException('已登录，请勿重复操作');
+        }
+
         $originToken = $this->createToken();
 
         $encryption = $this->encryptToken($originToken);
@@ -118,10 +125,20 @@ trait RedisHelpers
 
         $this->redis->expire($key, Date::TWO_DAYS->value + 360);
 
+        $this->models[$this->globleKey($user)] = $user;
+
         return [
             'access_token' => $originToken,
             'type'         => 'Bearer',
         ];
+    }
+
+    /**
+     * Set or get model key.
+     */
+    private function globleKey(Model|Authenticatable $user):string
+    {
+        return get_class($user).'.'.$user->getModelIdentifier();
     }
 
     /**
