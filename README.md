@@ -1,10 +1,6 @@
 ### Bearer Auth
 
-> 此项目基于 `Laravel` 开发,参考了内置的 guard 实现了一套自定义的守卫器
->
-> 守卫器基于 `redis` 存储，不再依赖数据库，使用简单
->
-> 已实现了中间件过滤拦截，登录，注销功能
+> 此项目基于 `Laravel` 开发 , `redis` 存储令牌
 
 ### 架构图
 
@@ -19,10 +15,10 @@
 composer require xgbnl/bearer
 ```
 
-### 发布至项目
+### 发布配置文件
 
 ```shell
-php artisan bearer:install
+php artisan bearer:publish
 ```
 
 ### 使用
