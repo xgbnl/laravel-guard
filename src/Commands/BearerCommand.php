@@ -11,7 +11,7 @@ class BearerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'bearer:install';
+    protected $signature = 'bearer:publish';
 
     /**
      * The console command description.
@@ -27,8 +27,8 @@ class BearerCommand extends Command
      */
     public function handle()
     {
-        $this->call('vendor:publish',[
-           "--provider" => "Xgbnl\Bearer\Providers\BearerServiceProvider"
+        $this->call('vendor:publish', [
+            "--provider" => "Xgbnl\Bearer\Providers\BearerServiceProvider"
         ]);
     }
 }
