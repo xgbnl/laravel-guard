@@ -3,13 +3,13 @@
 namespace Xgbnl\Bearer\Services;
 
 use Exception;
-use Xgbnl\Bearer\Contracts\Encryption;
 
-class TokenService implements Encryption
+class Generator
 {
     private ?string $token = null;
 
     /**
+     * Crate a new token.
      * @throws Exception
      */
     public function generateToken(int $length = 64): string
@@ -27,13 +27,34 @@ class TokenService implements Encryption
         return $this->token;
     }
 
+    /**
+     * Use token generate new a sign.
+     * @param string $token
+     * @return string
+     */
     public function generateSign(string $token): string
     {
         return hash('sha256', $token);
     }
 
-    public function generateKey(string $token): string
+    /**
+     * Generate user mark key.
+     * @param int $uid
+     * @param string $provider
+     * @return string
+     */
+    public function generateUserKey(int $uid, string $provider): string
     {
-        return 'sys:user:token' . $token;
+        return "auth:{$uid}:{$provider}";
+    }
+
+    /**
+     * Generate sign mark key.
+     * @param string $sign
+     * @return string
+     */
+    public function generateAuthKey(string $sign): string
+    {
+        return "auth:{$sign}:token";
     }
 }

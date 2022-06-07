@@ -114,6 +114,6 @@ class GuardManager implements Factory
 
     public function getRepositories(): Repositories
     {
-        return new Repositories(new TokenService(), $this->app['config']['bearer.store.redis.connect']);
+        return new Repositories(new Generator(), $this->app['config']['bearer.store.redis.connect']);
     }
 }

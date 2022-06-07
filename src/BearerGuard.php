@@ -15,10 +15,10 @@ class BearerGuard extends Bearer
     public function logout(): void
     {
         if (is_null($this->user)) {
-            trigger(403, '请登录后再尝试使用注销功能');
+            trigger(403, '无法注销，请登录后再试!');
         }
 
-        $this->repositories->clearToken($this->getTokenForRequest());
+        $this->repositories->forgeCache($this->getTokenForRequest());
     }
 
     public function expires(): bool

@@ -8,10 +8,8 @@ use Xgbnl\Bearer\Contracts\Authenticatable;
 use Xgbnl\Bearer\Contracts\Provider\Provider;
 use Illuminate\Http\Request;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
-use Xgbnl\Bearer\Exception\BearerException;
 use Xgbnl\Bearer\Services\Repositories;
 use Xgbnl\Bearer\Traits\GuardHelpers;
-use Xgbnl\Bearer\Traits\RedisHelpers;
 
 abstract class Bearer implements GuardContact
 {
@@ -32,6 +30,8 @@ abstract class Bearer implements GuardContact
         $this->inputKey     = $inputKey;
         $this->request      = $request;
         $this->repositories = $repositories;
+
+        $this->repositories->setBearer($this);
     }
 
     final public function user(): Authenticatable|null
@@ -40,19 +40,21 @@ abstract class Bearer implements GuardContact
             return $this->user;
         }
 
-        if (is_null($accessToken = $this->getTokenForRequest())) {
-            return null;
+        $conditions = [
+            is_null($accessToken = $this->getTokenForRequest()),
+            $this->repositories->tokenNotExists($this->getTokenForRequest()),
+            $this->repositories->tokenExpires($accessToken)
+        ];
+
+        foreach ($conditions as $condition) {
+            if ($condition) {
+                return null;
+            }
         }
 
-        if ($this->repositories->tokenNotExists($this->getTokenForRequest())) {
-            return null;
-        }
+        $user = $this->provider->retrieveById($this->repositories->fetchUser($accessToken)['uid']);
 
-        if ($this->repositories->tokenExpires($accessToken)) {
-            return null;
-        }
-
-        if (is_null($user = $this->provider->retrieveById($this->repositories->fetchUserId($accessToken)))) {
+        if (is_null($user)) {
             return null;
         }
 
@@ -62,8 +64,8 @@ abstract class Bearer implements GuardContact
     final protected function getTokenForRequest(): ?string
     {
         $tokens = [
-            'query'  => $this->request->query($this->inputKey),
-            'input'  => $this->request->input($this->inputKey),
+            'query' => $this->request->query($this->inputKey),
+            'input' => $this->request->input($this->inputKey),
             'header' => $this->request->bearerToken(),
         ];
 
@@ -72,8 +74,22 @@ abstract class Bearer implements GuardContact
         return !empty($accessToken) ? array_shift($accessToken) : null;
     }
 
+    /**
+     * Get provider model belong table name
+     * @return string
+     */
+    final public function getTable(): string
+    {
+        return $this->getProvider()->getProvider();
+    }
+
     final public function setRequest(Request $request)
     {
         $this->request = $request;
+    }
+
+    final public function getRequest(): Request
+    {
+        return $this->request;
     }
 }
