@@ -7,6 +7,7 @@
 ![image](yuque.jpg)
 
 ### 使用前准备
+
 - 你需要安装 reids,并安装 redis 扩展
 
 ### 引入包
@@ -24,6 +25,7 @@ php artisan bearer:publish
 ### 使用
 
 - 编辑.env
+
 ```dotenv
 REDIS_HOST=redis
 REDIS_PASSWORD=123456
@@ -50,7 +52,8 @@ Route::middleware('guard:user')->get('/user',fn(Request $req) => $req->user());
 
 ### 写在最后
 
-为确保功能正常使用，`bearer.php` 配置文件中的提供者模型需要实现 `Xgbnl\Bearer\Contracts\Authenticatable` 接口,这里我的 `trati` 已经实现了该接口的方法，你应该像下面这样配置你的模型:
+为确保功能正常使用，`bearer.php` 配置文件中的提供者模型需要实现 `Xgbnl\Bearer\Contracts\Authenticatable` 接口,这里我的 `trati`
+已经实现了该接口的方法，你应该像下面这样配置你的模型:
 
 ```php
 use Xgbnl\Bearer\Contracts\Authenticatable;
@@ -65,6 +68,7 @@ class User implements Authenticatable
 ### 更详细说明
 
 - 使用登录功能
+
 > guard 辅助函数会返回一个守卫实例，`login` 函数实现了用户登录的具体逻辑，并返回一个`access_token`
 
 ```php
@@ -79,15 +83,20 @@ public function login()
     // Validate ....
 
     // Auto login
-    $guard = guard('user')->login($user);
+    $token = guard('user')->login($user);
+    
+    // Get user permission
+    $permission = $user->permission;
 
-    return json($guard);
+    return json(['permission' => $permission,'token'=>$token]);
 }
 
 ```
 
 - 使用注销
+
 > 使用前提，用户必须为登录的情况下，否则抛出异常
+
 ```php
 
 guard('user')->logout();
