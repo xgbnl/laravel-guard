@@ -61,7 +61,7 @@ abstract class Bearer implements GuardContact
         return $this->user = $user;
     }
 
-    final protected function getTokenForRequest(): ?string
+    final public function getTokenForRequest(): ?string
     {
         $tokens = [
             'query' => $this->request->query($this->inputKey),
