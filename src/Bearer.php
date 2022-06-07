@@ -40,16 +40,16 @@ abstract class Bearer implements GuardContact
             return $this->user;
         }
 
-        $conditions = [
-            is_null($accessToken = $this->getTokenForRequest()),
-            $this->repositories->tokenNotExists($this->getTokenForRequest()),
-            $this->repositories->tokenExpires($accessToken)
-        ];
+        if (is_null($accessToken = $this->getTokenForRequest())) {
+            return null;
+        }
 
-        foreach ($conditions as $condition) {
-            if ($condition) {
-                return null;
-            }
+        if ($this->repositories->tokenNotExists($accessToken)) {
+            return null;
+        }
+
+        if ($this->repositories->tokenExpires($accessToken)) {
+            return null;
         }
 
         $user = $this->provider->retrieveById($this->repositories->fetchUser($accessToken)['uid']);
