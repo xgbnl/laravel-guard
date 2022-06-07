@@ -6,9 +6,10 @@
 
 ![image](yuque.jpg)
 
-### 使用前准备
+### 请安装以下扩展
 
-- 你需要安装 reids,并安装 redis 扩展
+- redis
+- pecl-http
 
 ### 引入包
 
