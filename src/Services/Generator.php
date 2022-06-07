@@ -50,11 +50,11 @@ class Generator
 
     /**
      * Generate sign mark key.
-     * @param string $sign
+     * @param string $token
      * @return string
      */
-    public function generateAuthKey(string $sign): string
+    public function generateAuthKey(string $token): string
     {
-        return "auth:{$sign}:token";
+        return "auth:{$this->generateSign($token)}:token";
     }
 }
