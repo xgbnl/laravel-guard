@@ -171,7 +171,7 @@ class Repositories
     {
         $user = $this->fetchUser($this->bearer->getTokenForRequest());
 
-        return in_array($needle, $user);
+        return !in_array($needle, $user);
     }
 
     /**
