@@ -118,7 +118,7 @@ class Repositories
      */
     public function tokenExpires(string $token): bool
     {
-        return $this->redis->ttl($this->generator->generateAuthKey($token)) <= 360;
+        return (bool)$this->redis->ttl($this->generator->generateAuthKey($token)) <= 360;
     }
 
     /**
@@ -129,7 +129,7 @@ class Repositories
      */
     private function modelExists(int $uid, string $provider): bool
     {
-        return $this->redis->exists($this->generator->generateUserKey($uid, $provider));
+        return (bool)$this->redis->exists($this->generator->generateUserKey($uid, $provider));
     }
 
     /**
