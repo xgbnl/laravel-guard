@@ -10,7 +10,6 @@ use RedisException;
 use Xgbnl\Bearer\Bearer;
 use Xgbnl\Bearer\Enum\Date;
 use Xgbnl\Bearer\Contracts\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis as FacadeRedis;
 
 class Repositories
@@ -20,14 +19,17 @@ class Repositories
     private Generator $generator;
     private Bearer    $bearer;
 
-    public function __construct(Generator $generator, string $connect = 'default')
+    public function __construct(Generator $generator, string $connect)
     {
         $this->generator = $generator;
 
         try {
             $this->redis = FacadeRedis::connection($connect)->client();
         } catch (RedisException $e) {
-            trigger(500, 'Error initializing redis,Please check your configure');
+            trigger(
+                500,
+                'Error initializing redis,Please check your configure:[ ' . $e->getMessage() . ' ]'
+            );
         }
     }
 
@@ -42,7 +44,7 @@ class Repositories
             $user = $this->fetchUser($this->generator->generateAuthKey($token));
 
             $this->redis->del([
-                $this->generator->generateUserKey($user['uid'], $this->bearer->getTable()),
+                $this->generator->generateUserKey($user['uid'], $this->bearer->getProvider()->getProviderName()),
                 $this->generator->generateAuthKey($token),
             ]);
 
@@ -53,26 +55,31 @@ class Repositories
 
     /**
      * Store user log in info.
-     * @param Model|Authenticatable $model
+     * @param Authenticatable $user
      * @return array
      * @throws Exception
      */
-    public function store(Model|Authenticatable $model): array
+    public function store(Authenticatable $user): array
     {
         // Generate token and auth sign
         $token = $this->generator->generateToken();
         $sign  = $this->generator->generateSign($token);
 
         // For user generate key
-        $userKey = $this->generator->generateUserKey($model->getModelIdentifier(), $this->bearer->getTable());
+        $userKey = $this->generator->generateUserKey(
+            $user->getModelIdentifier(),
+            $this->bearer->getProvider()->getProviderName(),
+        );
+
         $authKey = $this->generator->generateAuthKey($sign);
 
-        if ($this->modelExists($model->getModelIdentifier(), $this->bearer->getTable())) {
-            $oldSign = $this->redis->get($userKey);
-            $this->redis->rename($oldSign, $authKey);
+        if ($this->modelExists($user->getModelIdentifier(), $this->bearer->getProvider()->getProviderName())) {
+            $oldAuthKey = $this->redis->get($userKey);
+
+            $this->redis->rename($oldAuthKey, $authKey);
         }
 
-        $this->doStore($model, $userKey, $authKey);
+        $this->doStore($user, $userKey, $authKey);
 
         return [
             'access_token' => $token,
@@ -80,7 +87,7 @@ class Repositories
         ];
     }
 
-    public function doStore(Model|Authenticatable $model, string $userKey, string $authKey): void
+    public function doStore(Authenticatable $user, string $userKey, string $authKey): void
     {
         $expire = Date::TWO_DAYS->value + 360;
 
@@ -91,13 +98,13 @@ class Repositories
                 $authKey,
                 $expire,
                 json_encode([
-                    'uid' => $model->getModelIdentifier(),
+                    'uid' => $user->getModelIdentifier(),
                     'device' => $this->bearer->getRequest()->userAgent(),
                     'ip' => $this->bearer->getRequest()->getClientIp(),
                 ]),
             );
         } catch (RedisException $e) {
-            trigger(500, 'Store user info fail !');
+            trigger(500, 'Store user info fail:[ ' . $e->getMessage() . ' ]');
         }
     }
 

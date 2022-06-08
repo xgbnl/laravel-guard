@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Xgbnl\Bearer;
 
+use Illuminate\Http\Request;
 use Xgbnl\Bearer\Contracts\Authenticatable;
 use Xgbnl\Bearer\Contracts\Provider\Provider;
-use Illuminate\Http\Request;
 use Xgbnl\Bearer\Contracts\Guard\GuardContact;
 use Xgbnl\Bearer\Services\Repositories;
 use Xgbnl\Bearer\Traits\GuardHelpers;
@@ -72,15 +72,6 @@ abstract class Bearer implements GuardContact
         $accessToken = array_filter($tokens, fn($token) => !empty($token));
 
         return !empty($accessToken) ? array_shift($accessToken) : null;
-    }
-
-    /**
-     * Get provider model belong table name
-     * @return string
-     */
-    final public function getTable(): string
-    {
-        return $this->getProvider()->getProvider();
     }
 
     final public function setRequest(Request $request)

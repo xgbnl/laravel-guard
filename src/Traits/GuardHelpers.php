@@ -7,13 +7,10 @@ use Xgbnl\Bearer\Exception\BearerException;
 
 trait GuardHelpers
 {
-    /**
-     * @throws BearerException
-     */
     public function authenticate(): Authenticatable
     {
         if (!$this->check()) {
-            throw new BearerException('没有经过身份验证');
+            trigger(403, '没有经过身份验证');
         }
 
         return $this->user();
