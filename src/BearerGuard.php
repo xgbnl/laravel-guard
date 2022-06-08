@@ -11,10 +11,6 @@ class BearerGuard extends Bearer
 {
     public function logout(): void
     {
-        if (!$this->hasUser()) {
-            trigger(403, '您目前未登录，无法退出!');
-        }
-
         $this->repositories->forgeCache($this->getTokenForRequest());
     }
 
