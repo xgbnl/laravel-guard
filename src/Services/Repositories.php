@@ -124,7 +124,9 @@ class Repositories
      */
     public function tokenExpires(string $token): bool
     {
-        return $this->redis->ttl($this->generator->generateAuthKey($token)) <= 360;
+        $timeout = $this->redis->ttl($this->generator->generateAuthKey($token));
+
+        return is_numeric($timeout) && $timeout <= 360;
     }
 
     /**
