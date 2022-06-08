@@ -46,11 +46,6 @@ trait GuardHelpers
         return $this->validate($this->request->userAgent());
     }
 
-    /**
-     * Validate
-     * @param string $needle
-     * @return bool]
-     */
     private function validate(string $needle): bool
     {
         $user = $this->repositories->fetchUser($this->getTokenForRequest());
