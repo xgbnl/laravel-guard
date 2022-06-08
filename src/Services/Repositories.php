@@ -41,7 +41,7 @@ class Repositories
     public function forgeCache(string $token): void
     {
         try {
-            $user = $this->fetchUser($this->generator->generateAuthKey($token));
+            $user = $this->fetchUser($token);
 
             $this->redis->del([
                 $this->generator->generateUserKey($user['uid'], $this->bearer->getProvider()->getProviderName()),
