@@ -66,7 +66,15 @@ class User implements Authenticatable
 }
 ```
 
-### 更详细说明
+### 详细说明
+
+- 前端使用
+
+请求头加上如下
+```js
+request.headers['Authorization'] = 'Bearer' + ' ' + getToken()
+```
+
 
 - 使用登录功能
 
