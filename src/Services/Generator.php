@@ -32,7 +32,7 @@ class Generator
      * @param string $token
      * @return string
      */
-    public function generateSign(string $token): string
+    private function generateSign(string $token): string
     {
         return hash('sha256', $token);
     }
@@ -49,7 +49,7 @@ class Generator
     }
 
     /**
-     * Generate sign mark key.
+     * Generate token sign and return auth key.
      * @param string $token
      * @return string
      */

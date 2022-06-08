@@ -63,7 +63,6 @@ class Repositories
     {
         // Generate token and auth sign
         $token = $this->generator->generateToken();
-        $sign  = $this->generator->generateSign($token);
 
         // For user generate key
         $userKey = $this->generator->generateUserKey(
@@ -71,7 +70,7 @@ class Repositories
             $this->bearer->getProvider()->getProviderName(),
         );
 
-        $authKey = $this->generator->generateAuthKey($sign);
+        $authKey = $this->generator->generateAuthKey($token);
 
         if ($this->modelExists($user->getModelIdentifier(), $this->bearer->getProvider()->getProviderName())) {
             $oldAuthKey = $this->redis->get($userKey);
