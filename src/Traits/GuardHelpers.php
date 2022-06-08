@@ -35,4 +35,26 @@ trait GuardHelpers
     {
         return $this->user()?->getModelIdentifier();
     }
+
+    public function validateClientIP(): bool
+    {
+        return $this->validate($this->request->getClientIp());
+    }
+
+    public function validateDevice(): bool
+    {
+        return $this->validate($this->request->userAgent());
+    }
+
+    /**
+     * Validate
+     * @param string $needle
+     * @return bool]
+     */
+    private function validate(string $needle): bool
+    {
+        $user = $this->repositories->fetchUser($this->getTokenForRequest());
+
+        return !in_array($needle, $user);
+    }
 }

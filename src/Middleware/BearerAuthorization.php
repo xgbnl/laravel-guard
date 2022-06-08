@@ -17,5 +17,9 @@ class BearerAuthorization extends Authorization
            trigger(403,'令牌已失效,请重新登录');
         }
 
+        if ($this->guard()->validateDevice()){
+            // 当前访问IP和上次访问IP不一致时,进行验证
+
+        }
     }
 }

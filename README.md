@@ -99,9 +99,47 @@ public function login()
 > 使用前提，用户必须为登录的情况下，否则抛出异常
 
 ```php
-
 guard('user')->logout();
-
 ```
 
-更多配置请查看 `config/bearer.php`
+## 扩展中间件
+
+> 一旦涉及到隐私、金钱、密码之类的操作，必须要再次验证身份。包里提供两种保护方式，根据实际业务去调整
+
+- 通过校验`ip`地址
+- 通过校验设备信息
+
+创建一个`FilterMiddleware`
+
+```shell
+php artisan make:middleware FilterMiddleware
+```
+
+**继承 `Xgbnl\Bearer\Middleware\Authorization`,并实现 `doHandle()方法`**
+
+```php
+
+use Xgbnl\Bearer\Middleware\Authorization;
+
+class FilterMiddleware extends Authorization
+{
+    public function doHandle(){
+    
+    // TODO: Implement doHandle() method.
+        
+        // 本次访问IP与上次记录IP不一致时
+        if ($this->guard()->validateClientIP()){
+        
+            // .... 进行设备验证逻辑 
+            
+            // 或者抛出异常
+        }
+        
+        // 本次访问的设备与上次不一致时
+        if ($this->guard()->validateDevice()){
+            // 验证操作或抛出异常
+        }
+    }
+}
+```
+
