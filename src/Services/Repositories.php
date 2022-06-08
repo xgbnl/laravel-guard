@@ -151,36 +151,6 @@ class Repositories
     }
 
     /**
-     * Verify that the current user ip and the ip of the cache record are the same
-     * @return bool
-     */
-    public function validateClientIP(): bool
-    {
-        return $this->validate($this->bearer->getRequest()->getClientIp());
-    }
-
-    /**
-     * Verify that the current user device and the device of the cache record are the same
-     * @return bool
-     */
-    public function validateDevice(): bool
-    {
-        return $this->validate($this->bearer->getRequest()->userAgent());
-    }
-
-    /**
-     * Validate
-     * @param string $needle
-     * @return bool]
-     */
-    private function validate(string $needle): bool
-    {
-        $user = $this->fetchUser($this->bearer->getTokenForRequest());
-
-        return !in_array($needle, $user);
-    }
-
-    /**
      * Set Bearer Guard.
      * @param Bearer $bearer
      * @return void
