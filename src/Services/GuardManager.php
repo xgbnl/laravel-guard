@@ -30,9 +30,6 @@ class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    /**
-     * @throws BearerException
-     */
     public function guard(?string $role = null): GuardContact
     {
         $role = $role ?? $this->getDefaultDriver();
@@ -74,10 +71,10 @@ class GuardManager implements Factory
     public function createBearerDriver(array $config): GuardContact
     {
         $guard = new BearerGuard(
-            provider    : $this->createUserProvider($this->app, $config['provider']),
+            provider    : $this->createUserProvider($config['provider']),
             request     : $this->app['request'],
             repositories: $this->getRepositories(),
-            inputKey    : $config['input_key'] ?? 'bearer_token',
+            inputKey    : $config['input_key'] ?? 'access_token',
         );
 
         $this->app->refresh('request', $guard, 'setRequest');

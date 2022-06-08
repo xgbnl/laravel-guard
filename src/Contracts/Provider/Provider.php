@@ -2,18 +2,17 @@
 
 namespace Xgbnl\Bearer\Contracts\Provider;
 
-use Xgbnl\Bearer\Contracts\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Xgbnl\Bearer\Contracts\Authenticatable;
 
 interface Provider
 {
     /**
      * 按ID检索并获取用户
      * @param int $id
-     * @return Model|Authenticatable|null
+     * @return Authenticatable|null
      */
-    public function retrieveById(int $id): Authenticatable|Model|null;
+    public function retrieveById(int $id): ?Authenticatable;
 
     /**
      * 解析返回一个构造查询器
@@ -25,5 +24,5 @@ interface Provider
      * 获取守卫名
      * @return string
      */
-    public function getProvider(): string;
+    public function getProviderName(): string;
 }
