@@ -1,6 +1,6 @@
 {
   "name": "xgbnl/bearer",
-  "description": "token guard",
+  "description": "👏🎉🎁基于Laravel开发的令牌守卫，开箱即用",
   "type": "library",
   "license": "MIT",
   "autoload": {
