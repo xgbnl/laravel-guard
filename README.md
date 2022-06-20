@@ -32,9 +32,7 @@ REDIS_HOST=redis
 REDIS_PASSWORD=123456
 REDIS_PORT=6379
 ```
-1. 1
-
-如果你想把`redis`存储到其它 `DB`，而不是默认的 `DB0`,请配置`config/bearer.php`
+如果你希望把`token`存储到其它 `DB`，而不是默认的 `DB0`,请配置`config/bearer.php`
 ```php
  'redis' => [
             'connect' => 'default', //　这里配置你的新连接，默认为 db0
