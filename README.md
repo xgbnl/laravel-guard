@@ -53,7 +53,7 @@ Route::middleware('guard:user')->get('/user',fn(Request $req) => $req->user());
 
 ### 写在最后
 
-为确保功能正常使用，`bearer.php` 配置文件中的提供者模型需要实现 `Xgbnl\Bearer\Contracts\Authenticatable` 接口,这里我的 `trati`
+为确保功能正常使用，`bearer.php` 配置文件中的提供者模型需要实现 `Xgbnl\Bearer\Contracts\Authenticatable` 接口,这里我的 `trait`
 已经实现了该接口的方法，你应该像下面这样配置你的模型:
 
 ```php
