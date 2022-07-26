@@ -11,14 +11,14 @@ class BearerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'bearer:publish';
+    protected $signature = 'guard:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'bearer 守卫安装命令';
+    protected $description = 'Install laravel guard';
 
     /**
      * Execute the console command.

@@ -1,6 +1,6 @@
 {
-  "name": "xgbnl/bearer",
-  "description": "👏🎉🎁基于Laravel开发的令牌守卫，开箱即用",
+  "name": "xgbnl/laravel-guard",
+  "description": "基于Laravel开发的令牌守卫，开箱即用\uD83D\uDC4F",
   "type": "library",
   "license": "MIT",
   "autoload": {

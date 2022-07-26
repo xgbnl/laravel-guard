@@ -1,6 +1,6 @@
 ### Bearer Auth
 
-> 此项目基于 `Laravel` 开发 , `redis` 存储令牌
+> 环境要求：php8.1 、redis
 
 ### 架构图
 
@@ -14,13 +14,13 @@
 ### 引入包
 
 ```shell
-composer require xgbnl/bearer
+composer require xgbnl/laravel-guard
 ```
 
 ### 发布配置文件
 
 ```shell
-php artisan bearer:publish
+php artisan guard:install
 ```
 
 ### 简单使用
