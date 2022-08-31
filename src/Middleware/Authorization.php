@@ -20,7 +20,7 @@ abstract class Authorization
 
     public function handle(Request $request, \Closure $next, string $role)
     {
-        $this->guard = $this->auth->guard($role);
+        $this->guard = $this->auth->guard($role,null);
 
         $this->doHandle();
 
