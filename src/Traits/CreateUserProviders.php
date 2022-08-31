@@ -7,7 +7,7 @@ use Xgbnl\Bearer\Services\UserProvider;
 
 trait CreateUserProviders
 {
-    protected function createUserProvider(string $provider): Provider
+    protected function createUserProvider(string $provider,string|array $relations): Provider
     {
         if (empty($modelClass = $this->app['config']["bearer.providers.{$provider}"])) {
             trigger(
@@ -16,6 +16,6 @@ trait CreateUserProviders
             );
         }
 
-        return new UserProvider($modelClass, $provider);
+        return new UserProvider($modelClass, $provider,$relations);
     }
 }

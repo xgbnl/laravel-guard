@@ -95,7 +95,7 @@ public function login()
     // Validate ....
 
     // Auto login
-    $tokens = guard('user')->login($user); 
+    $tokens = guard('user','relations')->login($user); 
 
     /*
     $tokens 变量内容

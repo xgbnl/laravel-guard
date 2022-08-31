@@ -11,13 +11,15 @@ use Xgbnl\Bearer\Contracts\Provider\Provider;
 
 class UserProvider implements Provider
 {
-    protected string $modelClass;
-    protected string $provider;
+    protected string       $modelClass;
+    protected string       $provider;
+    protected string|array $relations;
 
-    public function __construct(string $modelClass, string $provider)
+    public function __construct(string $modelClass, string $provider, array $relations)
     {
         $this->modelClass = $modelClass;
-        $this->provider   = $provider;
+        $this->provider = $provider;
+        $this->relations = $relations;
     }
 
     public function retrieveById(int $id): ?Authenticatable
@@ -35,7 +37,9 @@ class UserProvider implements Provider
             trigger(500, $this->modelClass . ' is not ' . Model::class . ' subclass');
         }
 
-        return app($this->modelClass)::query();
+        return empty($this->relations)
+            ? app($this->modelClass)::query()
+            : app($this->modelClass)::query()->with($this->relations);
     }
 
     public function getProviderName(): string
