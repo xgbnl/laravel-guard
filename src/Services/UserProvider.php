@@ -13,9 +13,9 @@ class UserProvider implements Provider
 {
     protected string            $modelClass;
     protected string            $provider;
-    protected string|array|null $relations;
+    protected string|array $relations;
 
-    public function __construct(string $modelClass, string $provider, string|array|null $relations)
+    public function __construct(string $modelClass, string $provider, string|array $relations)
     {
         $this->modelClass = $modelClass;
         $this->provider = $provider;

@@ -26,11 +26,9 @@ class GuardManager implements Factory
     public function __construct(Application $app)
     {
         $this->app = $app;
-
-        $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    public function guard(?string $role = null, string|array|null $relations = null): GuardContact
+    public function guard(string $role, string|array $relations): GuardContact
     {
         $role = $role ?? $this->getDefaultDriver();
 
@@ -43,10 +41,10 @@ class GuardManager implements Factory
 
         $this->setDefaultDriver($name);
 
-        $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
+        $this->resolveUsersUsing(fn($guard = null, $relations = []) => $this->guard($guard, $relations)->user());
     }
 
-    protected function resolve(string $name, string|array|null $relations): GuardContact
+    protected function resolve(string $name, string|array$relations): GuardContact
     {
         $config = $this->getConfig($name);
 
@@ -63,12 +61,12 @@ class GuardManager implements Factory
         return $this->createBearerDriver($config, $relations);
     }
 
-    private function callCustomCreators(string $name, array $config, string|array|null $relations): void
+    private function callCustomCreators(string $name, array $config, string|array$relations): void
     {
         $this->customCreators[$name] = $this->createBearerDriver($config, $relations);
     }
 
-    public function createBearerDriver(array $config, string|array|null $relations): GuardContact
+    public function createBearerDriver(array $config, string|array $relations): GuardContact
     {
         $guard = new BearerGuard(
             provider: $this->createUserProvider($config['provider'], $relations),
