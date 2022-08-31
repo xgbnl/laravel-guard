@@ -14,7 +14,7 @@ interface Factory
      * @param string|array|null $relations
      * @return Guard
      */
-    public function guard(?string $role = null, string|array $relations = null): Guard;
+    public function guard(?string $role = null, string|array|null $relations = null): Guard;
 
     /**
      * 定义应该使用的默认守卫

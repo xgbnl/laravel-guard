@@ -13,7 +13,7 @@ if (!function_exists('guard')) {
      * @param string|array|null $relations
      * @return GuardContact
      */
-    function guard(string $role = null, string|array $relations = null): GuardContact
+    function guard(string $role = null, string|array|null $relations = null): GuardContact
     {
         if (is_null($role)) {
             return app(FactoryContract::class)->guard();

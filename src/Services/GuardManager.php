@@ -30,11 +30,11 @@ class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    public function guard(?string $role = null,string|array $relations = null): GuardContact
+    public function guard(?string $role = null, string|array|null $relations = null): GuardContact
     {
         $role = $role ?? $this->getDefaultDriver();
 
-        return $this->guards[$role] ?? $this->guards[$role] = $this->resolve($role,$relations);
+        return $this->guards[$role] ?? $this->guards[$role] = $this->resolve($role, $relations);
     }
 
     public function shouldUse(string $name): void
@@ -46,7 +46,7 @@ class GuardManager implements Factory
         $this->userResolver = fn($guard = null) => $this->guard($guard)->user();
     }
 
-    protected function resolve(string $name,string|array $relations): GuardContact
+    protected function resolve(string $name, string|array|null $relations): GuardContact
     {
         $config = $this->getConfig($name);
 
@@ -55,26 +55,26 @@ class GuardManager implements Factory
         }
 
         if (!isset($this->customCreators[$name])) {
-            $this->callCustomCreators($name, $config,$relations);
+            $this->callCustomCreators($name, $config, $relations);
         } else {
             return $this->customCreators[$name];
         }
 
-        return $this->createBearerDriver($config,$relations);
+        return $this->createBearerDriver($config, $relations);
     }
 
-    private function callCustomCreators(string $name, array $config,string|array $relations = null): void
+    private function callCustomCreators(string $name, array $config, string|array|null $relations): void
     {
-        $this->customCreators[$name] = $this->createBearerDriver($config,$relations);
+        $this->customCreators[$name] = $this->createBearerDriver($config, $relations);
     }
 
-    public function createBearerDriver(array $config,string|array $relations): GuardContact
+    public function createBearerDriver(array $config, string|array|null $relations): GuardContact
     {
         $guard = new BearerGuard(
-            provider    : $this->createUserProvider($config['provider'],$relations),
-            request     : $this->app['request'],
+            provider: $this->createUserProvider($config['provider'], $relations),
+            request: $this->app['request'],
             repositories: $this->getRepositories(),
-            inputKey    : $config['input_key'] ?? 'access_token',
+            inputKey: $config['input_key'] ?? 'access_token',
         );
 
         $this->app->refresh('request', $guard, 'setRequest');
