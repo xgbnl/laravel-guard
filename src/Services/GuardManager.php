@@ -28,7 +28,7 @@ class GuardManager implements Factory
         $this->app = $app;
     }
 
-    public function guard(string $role, string|array|null $relations): GuardContact
+    public function guard(string $role, string|array|null $relations = null): GuardContact
     {
         $role = $role ?? $this->getDefaultDriver();
 
