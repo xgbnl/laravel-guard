@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Middleware;
+namespace Xgbnl\Guard\Middleware;
 
 use Illuminate\Http\Request;
-use Xgbnl\Bearer\Contracts\Factory\Factory;
-use Xgbnl\Bearer\Contracts\Guard\GuardContact;
+use Xgbnl\Guard\Contracts\Factory\Factory;
+use Xgbnl\Guard\Contracts\Guard\GuardContact;
 
 abstract class Authorization
 {

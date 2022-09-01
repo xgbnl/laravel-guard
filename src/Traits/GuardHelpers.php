@@ -1,9 +1,9 @@
 <?php
 
-namespace Xgbnl\Bearer\Traits;
+namespace Xgbnl\Guard\Traits;
 
-use Xgbnl\Bearer\Contracts\Authenticatable;
-use Xgbnl\Bearer\Exception\BearerException;
+use Xgbnl\Guard\Contracts\Authenticatable;
+use Xgbnl\Guard\Exception\GuardException;
 
 trait GuardHelpers
 {

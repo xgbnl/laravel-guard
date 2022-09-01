@@ -1,6 +1,6 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts;
+namespace Xgbnl\Guard\Contracts;
 
 interface Authenticatable
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts\Factory;
+namespace Xgbnl\Guard\Contracts\Factory;
 
-use Xgbnl\Bearer\Contracts\Guard\Guard;
+use Xgbnl\Guard\Contracts\Guard\Guard;
 
 interface Factory
 {

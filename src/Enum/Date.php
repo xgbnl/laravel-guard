@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Enum;
+namespace Xgbnl\Guard\Enum;
 
 enum Date: int
 {

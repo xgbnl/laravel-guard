@@ -2,25 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer;
+namespace Xgbnl\Guard;
 
-use Xgbnl\Bearer\Contracts\Authenticatable;
-use Xgbnl\Bearer\Contracts\Provider\Provider;
+use http\Exception\RuntimeException;
+use Xgbnl\Guard\Contracts\Authenticatable;
+use Xgbnl\Guard\Contracts\Provider\Provider;
 
-class BearerGuard extends Bearer
+class Guard extends BaseGuard
 {
     public function logout(): void
     {
         if ($this->guest()) {
-            trigger(403, '请登录后继续操作');
+            throw new RuntimeException('请登录后操作',401);
         }
 
         $this->repositories->forgeCache($this->getTokenForRequest());
-    }
-
-    public function expires(): bool
-    {
-        return $this->repositories->tokenExpires($this->getTokenForRequest());
     }
 
     public function login(Authenticatable $user): array

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Services;
+namespace Xgbnl\Guard\Services;
 
+use Xgbnl\Guard\Exception\GuardException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Xgbnl\Bearer\Contracts\Authenticatable;
-use Xgbnl\Bearer\Contracts\Provider\Provider;
+use Xgbnl\Guard\Contracts\Authenticatable;
+use Xgbnl\Guard\Contracts\Provider\Provider;
 
 class UserProvider implements Provider
 {
@@ -30,11 +31,11 @@ class UserProvider implements Provider
     public function resolve(): Builder
     {
         if (!class_exists($this->modelClass)) {
-            trigger(500, 'Model [ ' . $this->modelClass . ' ] not exists');
+            throw new GuardException('模型 [ ' . $this->modelClass . ' ] 不存在',500);
         }
 
         if (!is_subclass_of($this->modelClass, Model::class)) {
-            trigger(500, $this->modelClass . ' is not ' . Model::class . ' subclass');
+            throw new GuardException('模型[ '.$this->modelClass.' ]没有继承或不是[ '.Model::class.' ]的子类',500);
         }
 
         return empty($this->relations)

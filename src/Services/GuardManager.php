@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Services;
+namespace Xgbnl\Guard\Services;
 
 use Closure;
-use Xgbnl\Bearer\BearerGuard;
-use Xgbnl\Bearer\Contracts\Factory\Factory;
-use Xgbnl\Bearer\Contracts\Guard\GuardContact;
-use Xgbnl\Bearer\Exception\BearerException;
-use Xgbnl\Bearer\Traits\CreateUserProviders;
+use http\Exception\RuntimeException;
+use Xgbnl\Guard\Guard;
+use Xgbnl\Guard\Contracts\Factory\Factory;
+use Xgbnl\Guard\Contracts\Guard\GuardContact;
+use Xgbnl\Guard\Traits\CreateUserProviders;
 use Illuminate\Contracts\Foundation\Application;
 
 class GuardManager implements Factory
@@ -49,7 +49,7 @@ class GuardManager implements Factory
         $config = $this->getConfig($name);
 
         if (is_null($config)) {
-            trigger(500, 'Guard role [ ' . $name . ' ] not define.');
+            throw new RuntimeException('守卫角色[ '.$name.' ]未定义');
         }
 
         if (!isset($this->customCreators[$name])) {
@@ -58,17 +58,17 @@ class GuardManager implements Factory
             return $this->customCreators[$name];
         }
 
-        return $this->createBearerDriver($config, $relations);
+        return $this->createguardDriver($config, $relations);
     }
 
     private function callCustomCreators(string $name, array $config, string|array|null $relations): void
     {
-        $this->customCreators[$name] = $this->createBearerDriver($config, $relations);
+        $this->customCreators[$name] = $this->createguardDriver($config, $relations);
     }
 
-    public function createBearerDriver(array $config, string|array|null $relations): GuardContact
+    public function createguardDriver(array $config, string|array|null $relations): GuardContact
     {
-        $guard = new BearerGuard(
+        $guard = new Guard(
             provider: $this->createUserProvider($config['provider'], $relations),
             request: $this->app['request'],
             repositories: $this->getRepositories(),
@@ -82,17 +82,17 @@ class GuardManager implements Factory
 
     protected function getConfig(string $name): ?array
     {
-        return $this->app['config']["bearer.roles.{$name}"];
+        return $this->app['config']["guard.roles.{$name}"];
     }
 
     protected function getDefaultDriver(): string
     {
-        return $this->app['config']['bearer.defaults.role'];
+        return $this->app['config']['guard.defaults.role'];
     }
 
     protected function setDefaultDriver(string $name): void
     {
-        $this->app['config']['bearer.defaults.role'] = $name;
+        $this->app['config']['guard.defaults.role'] = $name;
     }
 
     public function userResolver(): ?Closure
@@ -109,6 +109,6 @@ class GuardManager implements Factory
 
     public function getRepositories(): Repositories
     {
-        return new Repositories(new Generator(), $this->app['config']['bearer.store.redis.connect'] ?? 'default');
+        return new Repositories(new Generator(), $this->app['config']['guard.store.redis.connect'] ?? 'default');
     }
 }

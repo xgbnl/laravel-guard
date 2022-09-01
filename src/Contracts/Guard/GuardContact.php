@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Contracts\Guard;
+namespace Xgbnl\Guard\Contracts\Guard;
 
-use Xgbnl\Bearer\Contracts\Provider\Provider;
+use Xgbnl\Guard\Contracts\Provider\Provider;
 
 interface GuardContact extends StatefulGuard
 {

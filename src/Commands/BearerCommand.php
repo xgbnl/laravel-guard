@@ -1,6 +1,6 @@
 <?php
 
-namespace Xgbnl\Bearer\Commands;
+namespace Xgbnl\Guard\Commands;
 
 use Illuminate\Console\Command;
 
@@ -28,7 +28,7 @@ class BearerCommand extends Command
     public function handle()
     {
         $this->call('vendor:publish', [
-            "--provider" => "Xgbnl\Bearer\Providers\BearerServiceProvider"
+            "--provider" => "Xgbnl\Guard\Providers\BearerServiceProvider"
         ]);
     }
 }

@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Facades;
+namespace Xgbnl\Guard\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Bearer extends Facade
+class GuardFacade extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'bearer';
+        return 'guard';
     }
-
 }

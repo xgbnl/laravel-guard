@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Bearer\Services;
+namespace Xgbnl\Guard\Services;
 
+use http\Exception\RuntimeException;
 use Redis;
-use Exception;
 use RedisException;
-use Xgbnl\Bearer\Bearer;
-use Xgbnl\Bearer\Enum\Date;
-use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Guard\BaseGuard;
+use Xgbnl\Guard\Enum\Date;
+use Xgbnl\Guard\Contracts\Authenticatable;
 use Illuminate\Support\Facades\Redis as FacadeRedis;
 
 class Repositories
@@ -17,7 +17,7 @@ class Repositories
     private ?Redis $redis;
 
     private Generator $generator;
-    private Bearer    $bearer;
+    private BaseGuard $bearer;
 
     public function __construct(Generator $generator, string $connect)
     {
@@ -26,18 +26,10 @@ class Repositories
         try {
             $this->redis = FacadeRedis::connection($connect)->client();
         } catch (RedisException $e) {
-            trigger(
-                500,
-                'Error initializing redis,Please check your configure:[ ' . $e->getMessage() . ' ]'
-            );
+            throw new RuntimeException('初始化redis时错误[ ' . $e->getMessage() . ' ]请检查您的配置', 500);
         }
     }
 
-    /**
-     * Clear cache.
-     * @param string $token
-     * @return void
-     */
     public function forgeCache(string $token): void
     {
         try {
@@ -49,16 +41,10 @@ class Repositories
             ]);
 
         } catch (RedisException $e) {
-            trigger(500, 'From redis cache clear token fail: [ ' . $e->getMessage() . ' ]');
+            throw new RuntimeException('从redis缓存清除令牌失败[ ' . $e->getMessage() . ' ]', 500);
         }
     }
 
-    /**
-     * Store user log in info.
-     * @param Authenticatable $user
-     * @return array
-     * @throws Exception
-     */
     public function store(Authenticatable $user): array
     {
         // Generate token and auth sign
@@ -82,7 +68,7 @@ class Repositories
 
         return [
             'access_token' => $token,
-            'token_type' => 'Bearer',
+            'token_type'   => 'Bearer',
         ];
     }
 
@@ -97,31 +83,21 @@ class Repositories
                 $authKey,
                 $expire,
                 json_encode([
-                    'uid' => $user->getModelIdentifier(),
+                    'uid'    => $user->getModelIdentifier(),
                     'device' => $this->bearer->getRequest()->userAgent(),
-                    'ip' => $this->bearer->getRequest()->getClientIp(),
+                    'ip'     => $this->bearer->getRequest()->getClientIp(),
                 ]),
             );
         } catch (RedisException $e) {
-            trigger(500, 'Store user info fail:[ ' . $e->getMessage() . ' ]');
+            throw new RuntimeException ('储存用户信息失败[ ' . $e->getMessage() . ' ]', 500);
         }
     }
 
-    /**
-     * Determine token exists redis.
-     * @param string $token
-     * @return bool
-     */
     public function tokenNotExists(string $token): bool
     {
         return !$this->redis->get($this->generator->generateAuthKey($token));
     }
 
-    /**
-     * Determine token if expires.
-     * @param string $token
-     * @return bool
-     */
     public function tokenExpires(string $token): bool
     {
         $timeout = $this->redis->ttl($this->generator->generateAuthKey($token));
@@ -129,22 +105,11 @@ class Repositories
         return is_numeric($timeout) && $timeout <= 360;
     }
 
-    /**
-     * Determine user key exists。
-     * @param int $uid
-     * @param string $provider
-     * @return bool
-     */
     private function modelExists(int $uid, string $provider): bool
     {
         return (bool)$this->redis->exists($this->generator->generateUserKey($uid, $provider));
     }
 
-    /**
-     * Get user.
-     * @param string $token
-     * @return array
-     */
     public function fetchUser(string $token): array
     {
         $data = $this->redis->get($this->generator->generateAuthKey($token));
@@ -152,12 +117,7 @@ class Repositories
         return json_decode($data, true);
     }
 
-    /**
-     * Set Bearer Guard.
-     * @param Bearer $bearer
-     * @return void
-     */
-    public function setBearer(Bearer $bearer): void
+    public function setBearer(BaseGuard $bearer): void
     {
         $this->bearer = $bearer;
     }

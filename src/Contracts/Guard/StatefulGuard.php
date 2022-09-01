@@ -1,8 +1,8 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts\Guard;
+namespace Xgbnl\Guard\Contracts\Guard;
 
-use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Guard\Contracts\Authenticatable;
 
 interface StatefulGuard extends Guard
 {
@@ -15,14 +15,6 @@ interface StatefulGuard extends Guard
      * @return array
      */
     public function login(Authenticatable $user): array;
-
-    /**
-     * 确定 token 是否过期
-     *
-     * Determine if token expires in.
-     * @return bool
-     */
-    public function expires(): bool;
 
     /**
      * 将用户从应用程序中注销

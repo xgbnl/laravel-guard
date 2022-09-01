@@ -1,44 +1,31 @@
 <?php
 
-namespace Xgbnl\Bearer\Providers;
+namespace Xgbnl\Guard\Providers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
-use Xgbnl\Bearer\Commands\BearerCommand;
-use Xgbnl\Bearer\Contracts\Factory\Factory as FactoryContract;
-use Xgbnl\Bearer\Services\GuardManager;
+use Xgbnl\Guard\Commands\BearerCommand;
+use Xgbnl\Guard\Contracts\Factory\Factory;
+use Xgbnl\Guard\Services\GuardManager;
 
-class BearerServiceProvider extends ServiceProvider
+class GuardServiceProvider extends ServiceProvider
 {
     protected array $commands = [
             BearerCommand::class,
         ];
 
-    /**
-     * Register services.
-     *
-     * @return void
-     * @throws BindingResolutionException
-     */
     public function register(): void
     {
         $this->registerAuthenticator();
         $this->registerUserResolver();
     }
 
-    /**
-     * Register guard services to app defer load
-     * @return void
-     * @throws BindingResolutionException
-     */
     protected function registerAuthenticator(): void
     {
-        $this->app->singleton('bearer', fn($app) => new GuardManager($app));
+        $this->app->singleton(Factory::class, fn($app) => new GuardManager($app));
 
-        $this->app->singleton(FactoryContract::class, fn($app) => $app['bearer']);
-
-        $this->app->singleton('bearer.driver', fn($app) => $app['bearer']->guard());
+        $this->app->singleton('guard.driver', fn($app) => $app[Factory::class]->guard());
     }
 
     protected function registerUserResolver(): void
@@ -56,7 +43,7 @@ class BearerServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->publishes([dirname(__DIR__) . '/config/bearer.php' => config_path('bearer.php')], 'config');
+        $this->publishes([dirname(__DIR__) . '/config/guard.php' => config_path('guard.php')], 'config');
 
         $this->installCommand($this->commands);
     }
@@ -68,6 +55,6 @@ class BearerServiceProvider extends ServiceProvider
 
     public function provides(): array
     {
-        return ['bearer'];
+        return ['guard'];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Xgbnl\Bearer\Traits;
+namespace Xgbnl\Guard\Traits;
 
 trait AuthenticatableHelpers
 {

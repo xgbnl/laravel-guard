@@ -1,9 +1,9 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts\Provider;
+namespace Xgbnl\Guard\Contracts\Provider;
 
 use Illuminate\Database\Eloquent\Builder;
-use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Guard\Contracts\Authenticatable;
 
 interface Provider
 {

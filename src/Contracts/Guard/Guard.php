@@ -1,8 +1,8 @@
 <?php
 
-namespace Xgbnl\Bearer\Contracts\Guard;
+namespace Xgbnl\Guard\Contracts\Guard;
 
-use Xgbnl\Bearer\Contracts\Authenticatable;
+use Xgbnl\Guard\Contracts\Authenticatable;
 
 interface Guard
 {

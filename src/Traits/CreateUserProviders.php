@@ -1,9 +1,9 @@
 <?php
 
-namespace Xgbnl\Bearer\Traits;
+namespace Xgbnl\Guard\Traits;
 
-use Xgbnl\Bearer\Contracts\Provider\Provider;
-use Xgbnl\Bearer\Services\UserProvider;
+use Xgbnl\Guard\Contracts\Provider\Provider;
+use Xgbnl\Guard\Services\UserProvider;
 
 trait CreateUserProviders
 {
@@ -12,7 +12,7 @@ trait CreateUserProviders
         if (empty($modelClass = $this->app['config']["bearer.providers.{$provider}"])) {
             trigger(
                 500,
-                'Could not complete instantiation of provider ,Please check your configure file bearer.php'
+                'Could not complete instantiation of provider ,Please check your configure file guard.php'
             );
         }
 

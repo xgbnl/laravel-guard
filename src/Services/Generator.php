@@ -1,6 +1,6 @@
 <?php
 
-namespace Xgbnl\Bearer\Services;
+namespace Xgbnl\Guard\Services;
 
 use Exception;
 
