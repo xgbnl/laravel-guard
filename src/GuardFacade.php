@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Guard\Facades;
+namespace Xgbnl\Guard;
 
 use Illuminate\Support\Facades\Facade;
 

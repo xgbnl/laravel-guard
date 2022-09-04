@@ -1,18 +1,18 @@
 <?php
 
-namespace Xgbnl\Guard\Providers;
+namespace Xgbnl\Guard;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Xgbnl\Guard\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
-use Xgbnl\Guard\Commands\BearerCommand;
+use Xgbnl\Guard\Commands\GuardCommand;
 use Xgbnl\Guard\Contracts\Factory\Factory;
 use Xgbnl\Guard\Services\GuardManager;
 
 class GuardServiceProvider extends ServiceProvider
 {
     protected array $commands = [
-            BearerCommand::class,
+            GuardCommand::class,
         ];
 
     public function register(): void
@@ -32,7 +32,7 @@ class GuardServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             Authenticatable::class,
-            fn($app) => call_user_func($app[FactoryContract::class]->userResolver())
+            fn($app) => call_user_func($app[Factory::class]->userResolver())
         );
     }
 
