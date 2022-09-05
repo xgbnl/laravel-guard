@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Guard\Middleware;
+namespace App\Http\Middleware;
 
 use Xgbnl\Guard\Exception\GuardException;
+use Xgbnl\Guard\Middleware\Authorization;
 
 class GuardMiddleware extends Authorization
 {

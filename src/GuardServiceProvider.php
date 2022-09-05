@@ -34,8 +34,8 @@ class GuardServiceProvider extends ServiceProvider
     protected function registerAppConfig(): void
     {
         AppConfig::init()
-            ->configure($this->app['config']['guard.security'])
-            ->configure($this->app['config']['guard.expiration']);
+            ->configure($this->app['Config']['guard.security'])
+            ->configure($this->app['Config']['guard.expiration']);
     }
 
     protected function registerUserResolver(): void
@@ -53,7 +53,8 @@ class GuardServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->publishes([dirname(__DIR__) . '/config/guard.php' => config_path('guard.php')], 'config');
+        $this->publishes([dirname(__DIR__) . '/Config/guard.php' => config_path('guard.php')]);
+        $this->publishes([dirname(__DIR__) . '/Middleware/GuardMiddleware.php' => app_path('Http/Middleware/GuardMiddleware.php')]);
 
         $this->installCommand($this->commands);
     }

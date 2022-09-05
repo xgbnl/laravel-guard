@@ -82,17 +82,17 @@ class GuardManager implements Factory
 
     protected function getConfig(string $name): ?array
     {
-        return $this->app['config']["guard.roles.{$name}"];
+        return $this->app['Config']["guard.roles.{$name}"];
     }
 
     protected function getDefaultDriver(): string
     {
-        return $this->app['config']['guard.defaults.role'];
+        return $this->app['Config']['guard.defaults.role'];
     }
 
     protected function setDefaultDriver(string $name): void
     {
-        $this->app['config']['guard.defaults.role'] = $name;
+        $this->app['Config']['guard.defaults.role'] = $name;
     }
 
     public function userResolver(): ?Closure
@@ -109,15 +109,15 @@ class GuardManager implements Factory
 
     private function getRedisConnect(): string
     {
-        return $this->app['config']['guard.store.redis.connect'] ?? 'default';
+        return $this->app['Config']['guard.store.redis.connect'] ?? 'default';
     }
 
     protected function createModelProvider(string $provider, string|array|null $relations): ModelProvider
     {
-        if (empty($this->app['config']["guard.providers.{$provider}"])) {
+        if (empty($this->app['Config']["guard.providers.{$provider}"])) {
             throw new RuntimeException('无法完模型提供者实例化，请检查您的配置文件guard.php');
         }
 
-        return new ModelProvider($this->app['config']["guard.providers.{$provider}"], $provider, $relations);
+        return new ModelProvider($this->app['Config']["guard.providers.{$provider}"], $provider, $relations);
     }
 }
