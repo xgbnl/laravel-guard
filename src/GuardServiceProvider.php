@@ -33,9 +33,11 @@ class GuardServiceProvider extends ServiceProvider
 
     protected function registerAppConfig(): void
     {
-        AppConfig::init()
-            ->configure($this->app['config']['guard.security'])
-            ->configure($this->app['config']['guard.expiration']);
+        if (!empty($this->app['config']['guard.security']) && !empty($this->app['config']['guard.expiration'])) {
+            AppConfig::init()
+                ->configure($this->app['config']['guard.security'])
+                ->configure($this->app['config']['guard.expiration']);
+        }
     }
 
     protected function registerUserResolver(): void
