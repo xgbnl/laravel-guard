@@ -59,9 +59,9 @@ class Token
         $this->client->setex($key, AppConfig::init()->getExpiration(), $token);
 
         return [
-            'type'         => 'Bearer',
-            'access_token' => Aes::encrypt($key) . '.' . Aes::encrypt($token),
-            'expiration'   => AppConfig::init()->getExpiration(),
+            'token_type' => 'Bearer',
+            'expires_in' => AppConfig::init()->getExpiration(),
+            'scope'      => Aes::encrypt($key) . '.' . Aes::encrypt($token),
         ];
     }
 
