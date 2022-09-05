@@ -5,22 +5,19 @@ namespace Xgbnl\Guard\Contracts;
 interface Authenticatable
 {
     /**
-     * Get the name of the unique identifier for the user.
-     *
+     * 获取模型标识符名称
      * @return string
      */
     public function getModelIdentifierName(): string;
 
     /**
-     * Get the unique identifier for the user.
-     *
+     * 获取模型标识符
      * @return mixed
      */
     public function getModelIdentifier(): mixed;
 
     /**
-     * Get the password for the user.
-     *
+     * 获取模型密码
      * @return string|null
      */
     public function getModelPassword(): ?string;

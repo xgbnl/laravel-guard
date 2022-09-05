@@ -8,9 +8,6 @@ interface StatefulGuard extends Guard
 {
     /**
      * 将用户登录至应用程序
-     *
-     * Log a user into the application.
-     *
      * @param Authenticatable $user
      * @return array
      */
@@ -18,9 +15,6 @@ interface StatefulGuard extends Guard
 
     /**
      * 将用户从应用程序中注销
-     *
-     * Log the user out of the application.
-     *
      * @return void
      */
     public function logout(): void;

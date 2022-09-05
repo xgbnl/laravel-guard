@@ -4,25 +4,13 @@ declare(strict_types=1);
 
 namespace Xgbnl\Guard\Contracts\Guard;
 
-use Xgbnl\Guard\Contracts\Provider\Provider;
+use Xgbnl\Guard\Contracts\Authenticatable;
 
-interface GuardContact extends StatefulGuard
+interface GuardContact
 {
     /**
-     * 返回提供者实例
-     * @return Provider
+     * 返回认证后的用户实例
+     * @return Authenticatable|null
      */
-    public function getProvider(): Provider;
-
-    /**
-     * Verify that the current user ip and the ip of the cache record are the same
-     * @return bool
-     */
-    public function validateClientIP(): bool;
-
-    /**
-     * Verify that the current user device and the device of the cache record are the same
-     * @return bool
-     */
-    public function validateDevice(): bool;
+    public function user(): ?Authenticatable;
 }

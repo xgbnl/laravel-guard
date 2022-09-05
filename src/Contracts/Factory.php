@@ -1,25 +1,24 @@
 <?php
 
-namespace Xgbnl\Guard\Contracts\Factory;
+namespace Xgbnl\Guard\Contracts;
 
-use Xgbnl\Guard\Contracts\Guard\Guard;
+use Xgbnl\Guard\Contracts\Guard\GuardContact;
+use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
+use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
 
 interface Factory
 {
     /**
      * 返回一个守卫器实例
      *
-     * Return new a guard instance.
      * @param string $role
      * @param string|array|null $relations
-     * @return Guard
      */
-    public function guard(string $role, string|array|null $relations): Guard;
+    public function guard(string $role, string|array|null $relations): GuardContact|StatefulGuard|ValidatorGuard;
 
     /**
      * 定义应该使用的默认守卫
      *
-     * Defines the default guard that should be used.
      * @param string $name
      * @return void
      */
