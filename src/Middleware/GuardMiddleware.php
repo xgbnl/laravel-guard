@@ -8,7 +8,7 @@ use Xgbnl\Guard\Exception\GuardException;
 
 class GuardMiddleware extends Authorization
 {
-    public function doHandle()
+    public function doHandle(): void
     {
         if ($this->guard()->guest()) {
             throw new GuardException('无效令牌访问,请登录', 401);

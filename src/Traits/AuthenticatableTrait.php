@@ -2,7 +2,7 @@
 
 namespace Xgbnl\Guard\Traits;
 
-trait AuthenticatableHelpers
+trait AuthenticatableTrait
 {
     /**
      * 获取用户唯一标识符名称

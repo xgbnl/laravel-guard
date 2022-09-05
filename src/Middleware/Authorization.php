@@ -5,31 +5,55 @@ declare(strict_types=1);
 namespace Xgbnl\Guard\Middleware;
 
 use Illuminate\Http\Request;
-use Xgbnl\Guard\Contracts\Factory\Factory;
+use Xgbnl\Guard\Contracts\Factory;
+use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
 use Xgbnl\Guard\Contracts\Guard\GuardContact;
+use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
 
 abstract class Authorization
 {
-    private Factory       $auth;
-    private ?GuardContact $guard = null;
+    private readonly Factory                                        $factory;
+    private GuardContact|ValidatorGuard|StatefulGuard|null $guard = null;
 
-    final public function __construct(Factory $auth)
+    final public function __construct(Factory $factory)
     {
-        $this->auth = $auth;
+        $this->factory = $factory;
     }
 
     public function handle(Request $request, \Closure $next, string $role)
     {
-        $this->guard = $this->auth->guard($role);
+        $this->guard = $this->factory->guard($role);
 
         $this->doHandle();
 
         return $next($request);
     }
 
-    abstract public function doHandle();
+    /**
+     * 抽象处理方法.
+     * @return void
+     */
+    abstract public function doHandle(): void;
 
-    final protected function guard(): GuardContact
+    /**
+     * 验证客户端IP.
+     * @return bool
+     */
+    final protected function validateClientIP(): bool
+    {
+
+    }
+
+    /**
+     * 验证设备.
+     * @return bool
+     */
+    final protected function validateDevice(): bool
+    {
+
+    }
+    
+    final protected function guard(): GuardContact|ValidatorGuard|StatefulGuard
     {
         return $this->guard;
     }

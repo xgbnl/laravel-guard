@@ -2,23 +2,26 @@
 
 namespace Xgbnl\Guard;
 
-use Xgbnl\Guard\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\ServiceProvider;
 use Xgbnl\Guard\Commands\GuardCommand;
-use Xgbnl\Guard\Contracts\Factory\Factory;
+use Xgbnl\Guard\Contracts\Authenticatable;
+use Xgbnl\Guard\Contracts\Factory;
 use Xgbnl\Guard\Services\GuardManager;
+use Xgbnl\Guard\Token\AppConfig;
 
 class GuardServiceProvider extends ServiceProvider
 {
     protected array $commands = [
-            GuardCommand::class,
-        ];
+        GuardCommand::class,
+    ];
 
     public function register(): void
     {
         $this->registerAuthenticator();
         $this->registerUserResolver();
+
+        $this->registerAppConfig();
     }
 
     protected function registerAuthenticator(): void
@@ -26,6 +29,13 @@ class GuardServiceProvider extends ServiceProvider
         $this->app->singleton(Factory::class, fn($app) => new GuardManager($app));
 
         $this->app->singleton('guard.driver', fn($app) => $app[Factory::class]->guard());
+    }
+
+    protected function registerAppConfig(): void
+    {
+        AppConfig::init()
+            ->configure($this->app['config']['guard.security'])
+            ->configure($this->app['config']['guard.expiration']);
     }
 
     protected function registerUserResolver(): void

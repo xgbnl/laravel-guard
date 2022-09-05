@@ -4,7 +4,7 @@ namespace Xgbnl\Guard\Commands;
 
 use Illuminate\Console\Command;
 
-class BearerCommand extends Command
+class GuardCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -18,7 +18,7 @@ class BearerCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Install laravel guard';
+    protected $description = 'Install custom guard';
 
     /**
      * Execute the console command.
@@ -28,7 +28,7 @@ class BearerCommand extends Command
     public function handle()
     {
         $this->call('vendor:publish', [
-            "--provider" => "Xgbnl\Guard\Providers\BearerServiceProvider"
+            "--provider" => "Xgbnl\Guard\Providers\GuardServiceProvider"
         ]);
     }
 }

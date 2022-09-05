@@ -2,15 +2,15 @@
 
 namespace Xgbnl\Guard\Traits;
 
+use http\Exception\RuntimeException;
 use Xgbnl\Guard\Contracts\Authenticatable;
-use Xgbnl\Guard\Exception\GuardException;
 
-trait GuardHelpers
+trait GuardTrait
 {
     public function authenticate(): Authenticatable
     {
         if (!$this->check()) {
-            trigger(403, '没有经过身份验证');
+            throw new RuntimeException('没有经过身份验证,请登录后再试', 401);
         }
 
         return $this->user();
@@ -31,11 +31,6 @@ trait GuardHelpers
         return !$this->check();
     }
 
-    public function id(): mixed
-    {
-        return $this->user()?->getModelIdentifier();
-    }
-
     public function validateClientIP(): bool
     {
         return $this->validate($this->request->getClientIp());
@@ -48,7 +43,7 @@ trait GuardHelpers
 
     private function validate(string $needle): bool
     {
-        $user = $this->repositories->fetchUser($this->getTokenForRequest());
+        $user = $this->token->fetchUser($this->getTokenForRequest());
 
         return !in_array($needle, $user);
     }

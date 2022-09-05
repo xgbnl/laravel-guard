@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Xgbnl\Guard\Services;
 
-use Xgbnl\Guard\Exception\GuardException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Xgbnl\Guard\Contracts\Authenticatable;
-use Xgbnl\Guard\Contracts\Provider\Provider;
+use Xgbnl\Guard\Exception\GuardException;
 
-class UserProvider implements Provider
+class ModelProvider
 {
     protected string            $modelClass;
     protected string            $provider;
@@ -23,11 +22,20 @@ class UserProvider implements Provider
         $this->relations = $relations;
     }
 
+    /**
+     * 通过id检索用户
+     * @param int $id
+     * @return Authenticatable|null
+     */
     public function retrieveById(int $id): ?Authenticatable
     {
         return $this->resolve()->find($id);
     }
 
+    /**
+     * 解析模型
+     * @return Builder
+     */
     public function resolve(): Builder
     {
         if (!class_exists($this->modelClass)) {
@@ -43,6 +51,10 @@ class UserProvider implements Provider
             : app($this->modelClass)::query()->with($this->relations);
     }
 
+    /**
+     * 获取提供者名称
+     * @return string
+     */
     public function getProviderName(): string
     {
         return $this->provider;

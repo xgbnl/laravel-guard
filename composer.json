@@ -1,11 +1,11 @@
 {
   "name": "xgbnl/laravel-guard",
-  "description": "基于Laravel开发的令牌守卫，开箱即用\uD83D\uDC4F",
+  "description": "Laravel守卫扩展包",
   "type": "library",
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Xgbnl\\Bearer\\": "src/"
+      "Xgbnl\\Guard\\": "src/"
     },
     "files": [
       "src/Support/helpers.php"
@@ -20,15 +20,16 @@
   "minimum-stability": "dev",
   "require": {
     "ext-http": "*",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "ext-openssl": "*"
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Xgbnl\\Bearer\\Providers\\BearerServiceProvider"
+        "Xgbnl\\Guard\\GuardServiceProvider"
       ],
       "aliases": {
-        "bearer": "Xgbnl\\Bearer\\Facades\\Bearer"
+        "guard": "Xgbnl\\Guard\\GuardFacade"
       }
     }
   }

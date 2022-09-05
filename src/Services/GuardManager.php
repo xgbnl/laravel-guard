@@ -6,15 +6,15 @@ namespace Xgbnl\Guard\Services;
 
 use Closure;
 use http\Exception\RuntimeException;
-use Xgbnl\Guard\Guard;
-use Xgbnl\Guard\Contracts\Factory\Factory;
-use Xgbnl\Guard\Contracts\Guard\GuardContact;
-use Xgbnl\Guard\Traits\CreateUserProviders;
 use Illuminate\Contracts\Foundation\Application;
+use Xgbnl\Guard\Contracts\Factory;
+use Xgbnl\Guard\Contracts\Guard\GuardContact;
+use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
+use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
+use Xgbnl\Guard\Guards\Guard;
 
 class GuardManager implements Factory
 {
-    use CreateUserProviders;
 
     protected Application $app;
 
@@ -28,7 +28,7 @@ class GuardManager implements Factory
         $this->app = $app;
     }
 
-    public function guard(string $role, string|array|null $relations = null): GuardContact
+    public function guard(string $role, string|array|null $relations = null): GuardContact|StatefulGuard|ValidatorGuard
     {
         $role = $role ?? $this->getDefaultDriver();
 
@@ -44,12 +44,12 @@ class GuardManager implements Factory
         $this->resolveUsersUsing(fn($guard = null, $relations = []) => $this->guard($guard, $relations)->user());
     }
 
-    protected function resolve(string $name, string|array|null $relations): GuardContact
+    protected function resolve(string $name, string|array|null $relations): GuardContact|StatefulGuard|ValidatorGuard
     {
         $config = $this->getConfig($name);
 
         if (is_null($config)) {
-            throw new RuntimeException('守卫角色[ '.$name.' ]未定义');
+            throw new RuntimeException('守卫角色[ ' . $name . ' ]未定义');
         }
 
         if (!isset($this->customCreators[$name])) {
@@ -58,21 +58,21 @@ class GuardManager implements Factory
             return $this->customCreators[$name];
         }
 
-        return $this->createguardDriver($config, $relations);
+        return $this->createGuardDriver($config, $relations);
     }
 
     private function callCustomCreators(string $name, array $config, string|array|null $relations): void
     {
-        $this->customCreators[$name] = $this->createguardDriver($config, $relations);
+        $this->customCreators[$name] = $this->createGuardDriver($config, $relations);
     }
 
-    public function createguardDriver(array $config, string|array|null $relations): GuardContact
+    public function createGuardDriver(array $config, string|array|null $relations): GuardContact|StatefulGuard|ValidatorGuard
     {
         $guard = new Guard(
-            provider: $this->createUserProvider($config['provider'], $relations),
+            provider: $this->createModelProvider($config['provider'], $relations),
             request: $this->app['request'],
-            repositories: $this->getRepositories(),
             inputKey: $config['input_key'] ?? 'access_token',
+            connect: $this->getRedisConnect(),
         );
 
         $this->app->refresh('request', $guard, 'setRequest');
@@ -107,8 +107,17 @@ class GuardManager implements Factory
         return $this;
     }
 
-    public function getRepositories(): Repositories
+    private function getRedisConnect(): string
     {
-        return new Repositories(new Generator(), $this->app['config']['guard.store.redis.connect'] ?? 'default');
+        return $this->app['config']['guard.store.redis.connect'] ?? 'default';
+    }
+
+    protected function createModelProvider(string $provider, string|array|null $relations): ModelProvider
+    {
+        if (empty($this->app['config']["guard.providers.{$provider}"])) {
+            throw new RuntimeException('无法完模型提供者实例化，请检查您的配置文件guard.php');
+        }
+
+        return new ModelProvider($this->app['config']["guard.providers.{$provider}"], $provider, $relations);
     }
 }
