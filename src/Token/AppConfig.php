@@ -9,9 +9,10 @@ class AppConfig
     static private self $appConfig;
     private array       $config = [];
 
-    final public const PASSPHRASE  = 'key';
-    final public const IV          = 'iv';
-    final public const CIPHER_ALGO = 'cipher_algo';
+    final protected const PASSPHRASE  = 'key';
+    final protected const IV          = 'iv';
+    final protected const CIPHER_ALGO = 'cipher_algo';
+    final protected const EXPIRATION  = 'expiration';
 
     private function __construct()
     {
@@ -26,9 +27,11 @@ class AppConfig
         return empty(self::$appConfig) ? self::$appConfig = new self() : self::$appConfig;
     }
 
-    public function configure(array $config): void
+    public function configure(array $config): self
     {
-        $this->config = $config;
+        $this->config = array_merge($this->config, $config);
+
+        return $this;
     }
 
     public function getPassphrase(): string
@@ -44,6 +47,11 @@ class AppConfig
     public function getCipherAlgo(): string
     {
         return self::init()->getConfig(self::CIPHER_ALGO);
+    }
+
+    public function getExpiration(): int
+    {
+        return self::init()->getConfig(self::EXPIRATION);
     }
 
     private function getConfig(string $key): string
