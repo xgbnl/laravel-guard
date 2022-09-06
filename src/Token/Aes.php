@@ -18,12 +18,12 @@ final class Aes
 
     static public function decrypt(string $data): string
     {
-        return base64_decode(openssl_decrypt(
-            $data,
+        return openssl_decrypt(
+            base64_decode($data),
             AppConfig::init()->getCipherAlgo(),
             AppConfig::init()->getPassphrase(),
             OPENSSL_RAW_DATA,
             AppConfig::init()->getIv(),
-        ));
+        );
     }
 }
