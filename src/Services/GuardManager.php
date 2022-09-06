@@ -17,10 +17,7 @@ class GuardManager implements Factory
 {
 
     protected Application $app;
-
-    protected array $guards         = [];
-
-    protected Closure $userResolver;
+    protected array       $guards = [];
 
     public function __construct(Application $app)
     {
@@ -29,18 +26,16 @@ class GuardManager implements Factory
 
     public function guard(string $role = null): GuardContact|StatefulGuard|ValidatorGuard
     {
-        $role = $role ?? $this->getDefaultDriver();
+        $role = $role ?? $this->getDefaultRole();
 
         return $this->guards[$role] ?? $this->guards[$role] = $this->resolve($role);
     }
 
     public function shouldUse(string $name): void
     {
-        $name = $name ?? $this->getDefaultDriver();
+        $name = $name ?? $this->getDefaultRole();
 
-        $this->setDefaultDriver($name);
-
-        $this->resolveUsersUsing(fn($guard = null) => $this->guard($guard)->user());
+        $this->setDefaultRole($name);
     }
 
     protected function resolve(string $name): GuardContact|StatefulGuard|ValidatorGuard
@@ -73,26 +68,14 @@ class GuardManager implements Factory
         return $this->app['config']["guard.roles.{$name}"];
     }
 
-    protected function getDefaultDriver(): string
+    protected function getDefaultRole(): string
     {
         return $this->app['config']['guard.defaults.role'];
     }
 
-    protected function setDefaultDriver(string $name): void
+    protected function setDefaultRole(string $name): void
     {
         $this->app['config']['guard.defaults.role'] = $name;
-    }
-
-    public function userResolver(): ?Closure
-    {
-        return $this->userResolver;
-    }
-
-    public function resolveUsersUsing(Closure $userResolver): self
-    {
-        $this->userResolver = $userResolver;
-
-        return $this;
     }
 
     private function getRedisConnect(): string
