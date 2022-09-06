@@ -4,7 +4,7 @@ namespace Xgbnl\Guard\Contracts\Guards;
 
 use Xgbnl\Guard\Contracts\Authenticatable;
 
-interface StatefulGuard extends Guard
+interface StatefulGuard
 {
     /**
      * 将用户登录至应用程序
