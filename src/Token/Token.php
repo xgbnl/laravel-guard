@@ -71,7 +71,7 @@ class Token
      */
     public function hasKey(): bool
     {
-        return $this->client->exists($this->parseEncryptionToken());
+        return (bool)$this->client->exists($this->parseEncryptionToken());
     }
 
     /**
