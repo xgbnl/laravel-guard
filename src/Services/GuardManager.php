@@ -28,11 +28,11 @@ class GuardManager implements Factory
         $this->app = $app;
     }
 
-    public function guard(string $role, string|array|null $relations = null): GuardContact|StatefulGuard|ValidatorGuard
+    public function guard(string $role): GuardContact|StatefulGuard|ValidatorGuard
     {
         $role = $role ?? $this->getDefaultDriver();
 
-        return $this->guards[$role] ?? $this->guards[$role] = $this->resolve($role, $relations);
+        return $this->guards[$role] ?? $this->guards[$role] = $this->resolve($role);
     }
 
     public function shouldUse(string $name): void
@@ -41,10 +41,10 @@ class GuardManager implements Factory
 
         $this->setDefaultDriver($name);
 
-        $this->resolveUsersUsing(fn($guard = null, $relations = []) => $this->guard($guard, $relations)->user());
+        $this->resolveUsersUsing(fn($guard = null) => $this->guard($guard)->user());
     }
 
-    protected function resolve(string $name, string|array|null $relations): GuardContact|StatefulGuard|ValidatorGuard
+    protected function resolve(string $name): GuardContact|StatefulGuard|ValidatorGuard
     {
         $config = $this->getConfig($name);
 
@@ -53,23 +53,23 @@ class GuardManager implements Factory
         }
 
         if (!isset($this->customCreators[$name])) {
-            $this->callCustomCreators($name, $config, $relations);
+            $this->callCustomCreators($name, $config);
         } else {
             return $this->customCreators[$name];
         }
 
-        return $this->createGuardDriver($config, $relations);
+        return $this->createGuardDriver($config);
     }
 
-    private function callCustomCreators(string $name, array $config, string|array|null $relations): void
+    private function callCustomCreators(string $name, array $config): void
     {
-        $this->customCreators[$name] = $this->createGuardDriver($config, $relations);
+        $this->customCreators[$name] = $this->createGuardDriver($config);
     }
 
-    public function createGuardDriver(array $config, string|array|null $relations): GuardContact|StatefulGuard|ValidatorGuard
+    public function createGuardDriver(array $config): GuardContact|StatefulGuard|ValidatorGuard
     {
         $guard = new Guard(
-            provider: $this->createModelProvider($config['provider'], $relations),
+            provider: $this->createModelProvider($config['provider']),
             request: $this->app['request'],
             inputKey: $config['input_key'] ?? 'access_token',
             connect: $this->getRedisConnect(),
@@ -82,17 +82,17 @@ class GuardManager implements Factory
 
     protected function getConfig(string $name): ?array
     {
-        return $this->app['Config']["guard.roles.{$name}"];
+        return $this->app['config']["guard.roles.{$name}"];
     }
 
     protected function getDefaultDriver(): string
     {
-        return $this->app['Config']['guard.defaults.role'];
+        return $this->app['config']['guard.defaults.role'];
     }
 
     protected function setDefaultDriver(string $name): void
     {
-        $this->app['Config']['guard.defaults.role'] = $name;
+        $this->app['config']['guard.defaults.role'] = $name;
     }
 
     public function userResolver(): ?Closure
@@ -109,15 +109,15 @@ class GuardManager implements Factory
 
     private function getRedisConnect(): string
     {
-        return $this->app['Config']['guard.store.redis.connect'] ?? 'default';
+        return $this->app['config']['guard.store.redis.connect'] ?? 'default';
     }
 
-    protected function createModelProvider(string $provider, string|array|null $relations): ModelProvider
+    protected function createModelProvider(string $provider): ModelProvider
     {
-        if (empty($this->app['Config']["guard.providers.{$provider}"])) {
+        if (empty($this->app['config']["guard.providers.{$provider}"])) {
             throw new RuntimeException('无法完模型提供者实例化，请检查您的配置文件guard.php');
         }
 
-        return new ModelProvider($this->app['Config']["guard.providers.{$provider}"], $provider, $relations);
+        return new ModelProvider($this->app['config']["guard.providers.{$provider}"], $provider);
     }
 }

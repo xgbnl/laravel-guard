@@ -10,7 +10,8 @@ interface GuardContact
 {
     /**
      * 返回认证后的用户实例
+     * @param string|array|null $relations
      * @return Authenticatable|null
      */
-    public function user(): ?Authenticatable;
+    public function user(string|array|null $relations): ?Authenticatable;
 }

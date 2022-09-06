@@ -35,7 +35,7 @@ abstract class BaseGuard implements GuardContact
     /**
      * @throws RedisException
      */
-    final public function user(): Authenticatable|null
+    final public function user(string|array $relations = null): Authenticatable|null
     {
         if (!is_null($this->user)) {
             return $this->user;
@@ -53,7 +53,7 @@ abstract class BaseGuard implements GuardContact
             return null;
         }
 
-        $user = $this->provider->retrieveById($this->token->resolveIdentifier());
+        $user = $this->provider->retrieveById($this->token->resolveIdentifier(),$relations);
 
         return !is_null($user) ? $this->user = $user : null;
     }

@@ -11,25 +11,26 @@ use Xgbnl\Guard\Exception\GuardException;
 
 class ModelProvider
 {
-    protected string            $modelClass;
-    protected string            $provider;
-    protected string|array|null $relations;
+    protected string $modelClass;
+    protected string $provider;
 
-    public function __construct(string $modelClass, string $provider, string|array|null $relations)
+    public function __construct(string $modelClass, string $provider)
     {
         $this->modelClass = $modelClass;
-        $this->provider = $provider;
-        $this->relations = $relations;
+        $this->provider   = $provider;
     }
 
     /**
      * 通过id检索用户
      * @param int $id
+     * @param string|array|null $relations
      * @return Authenticatable|null
      */
-    public function retrieveById(int $id): ?Authenticatable
+    public function retrieveById(int $id, string|array|null $relations): ?Authenticatable
     {
-        return $this->resolve()->find($id);
+        return empty($relations)
+            ? $this->resolve()->find($id)
+            : $this->resolve()->with($relations)->find($id);
     }
 
     /**
@@ -39,16 +40,14 @@ class ModelProvider
     public function resolve(): Builder
     {
         if (!class_exists($this->modelClass)) {
-            throw new GuardException('模型 [ ' . $this->modelClass . ' ] 不存在',500);
+            throw new GuardException('模型 [ ' . $this->modelClass . ' ] 不存在', 500);
         }
 
         if (!is_subclass_of($this->modelClass, Model::class)) {
-            throw new GuardException('模型[ '.$this->modelClass.' ]没有继承或不是[ '.Model::class.' ]的子类',500);
+            throw new GuardException('模型[ ' . $this->modelClass . ' ]没有继承或不是[ ' . Model::class . ' ]的子类', 500);
         }
 
-        return empty($this->relations)
-            ? app($this->modelClass)::query()
-            : app($this->modelClass)::query()->with($this->relations);
+        return app($this->modelClass)::query();
     }
 
     /**

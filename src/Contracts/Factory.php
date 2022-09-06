@@ -12,9 +12,8 @@ interface Factory
      * 返回一个守卫器实例
      *
      * @param string $role
-     * @param string|array|null $relations
      */
-    public function guard(string $role, string|array|null $relations): GuardContact|StatefulGuard|ValidatorGuard;
+    public function guard(string $role): GuardContact|StatefulGuard|ValidatorGuard;
 
     /**
      * 定义应该使用的默认守卫
