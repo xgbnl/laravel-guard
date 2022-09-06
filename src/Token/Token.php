@@ -7,7 +7,6 @@ namespace Xgbnl\Guard\Token;
 use Exception;
 use Redis;
 use RedisException;
-use Xgbnl\Guard\Enum\Date;
 use Xgbnl\Guard\Guards\BaseGuard;
 use http\Exception\RuntimeException;
 use Xgbnl\Guard\Contracts\Authenticatable;

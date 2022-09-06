@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Xgbnl\Guard\Guards;
 
 use http\Exception\RuntimeException;
-use RedisException;
 use Xgbnl\Guard\Contracts\Authenticatable;
 use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
 use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;

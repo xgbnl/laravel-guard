@@ -2,8 +2,6 @@
 
 namespace Xgbnl\Guard\Token;
 
-use Xgbnl\Guard\Enum\AesEnum;
-
 final class Aes
 {
     static public function encrypt(string $data): string

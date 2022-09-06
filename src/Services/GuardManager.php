@@ -8,10 +8,10 @@ use Closure;
 use http\Exception\RuntimeException;
 use Illuminate\Contracts\Foundation\Application;
 use Xgbnl\Guard\Contracts\Factory;
+use Xgbnl\Guard\Guards\Guard;
 use Xgbnl\Guard\Contracts\Guard\GuardContact;
 use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
 use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
-use Xgbnl\Guard\Guards\Guard;
 
 class GuardManager implements Factory
 {
@@ -28,7 +28,7 @@ class GuardManager implements Factory
         $this->app = $app;
     }
 
-    public function guard(string $role): GuardContact|StatefulGuard|ValidatorGuard
+    public function guard(string $role = null): GuardContact|StatefulGuard|ValidatorGuard
     {
         $role = $role ?? $this->getDefaultDriver();
 
@@ -70,9 +70,9 @@ class GuardManager implements Factory
     {
         $guard = new Guard(
             provider: $this->createModelProvider($config['provider']),
-            request: $this->app['request'],
+            request : $this->app['request'],
             inputKey: $config['input_key'] ?? 'access_token',
-            connect: $this->getRedisConnect(),
+            connect : $this->getRedisConnect(),
         );
 
         $this->app->refresh('request', $guard, 'setRequest');
