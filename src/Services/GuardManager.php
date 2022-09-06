@@ -18,7 +18,6 @@ class GuardManager implements Factory
 
     protected Application $app;
 
-    protected array $customCreators = [];
     protected array $guards         = [];
 
     protected Closure $userResolver;
@@ -52,18 +51,7 @@ class GuardManager implements Factory
             throw new RuntimeException('守卫角色[ ' . $name . ' ]未定义');
         }
 
-        if (!isset($this->customCreators[$name])) {
-            $this->callCustomCreators($name, $config);
-        } else {
-            return $this->customCreators[$name];
-        }
-
         return $this->createGuardDriver($config);
-    }
-
-    private function callCustomCreators(string $name, array $config): void
-    {
-        $this->customCreators[$name] = $this->createGuardDriver($config);
     }
 
     public function createGuardDriver(array $config): GuardContact|StatefulGuard|ValidatorGuard
