@@ -32,9 +32,6 @@ abstract class BaseGuard implements GuardContact
         $this->token    = new Token($connect, $this);
     }
 
-    /**
-     * @throws RedisException
-     */
     final public function user(string|array $relations = null): Authenticatable|null
     {
         if (!is_null($this->user)) {

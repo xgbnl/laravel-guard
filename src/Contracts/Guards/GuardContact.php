@@ -13,5 +13,5 @@ interface GuardContact
      * @param string|array|null $relations
      * @return Authenticatable|null
      */
-    public function user(string|array|null $relations): ?Authenticatable;
+    public function user(string|array|null $relations = null): ?Authenticatable;
 }
