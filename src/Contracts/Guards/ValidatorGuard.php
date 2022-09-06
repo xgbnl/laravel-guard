@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Xgbnl\Guard\Contracts\Guard;
+namespace Xgbnl\Guard\Contracts\Guards;
 
 use Xgbnl\Guard\Contracts\Authenticatable;
 

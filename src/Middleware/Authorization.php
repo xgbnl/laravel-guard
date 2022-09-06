@@ -6,9 +6,9 @@ namespace Xgbnl\Guard\Middleware;
 
 use Illuminate\Http\Request;
 use Xgbnl\Guard\Contracts\Factory;
-use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
-use Xgbnl\Guard\Contracts\Guard\GuardContact;
-use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
+use Xgbnl\Guard\Contracts\Guards\ValidatorGuard;
+use Xgbnl\Guard\Contracts\Guards\GuardContact;
+use Xgbnl\Guard\Contracts\Guards\StatefulGuard;
 
 abstract class Authorization
 {

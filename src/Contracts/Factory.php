@@ -2,9 +2,9 @@
 
 namespace Xgbnl\Guard\Contracts;
 
-use Xgbnl\Guard\Contracts\Guard\GuardContact;
-use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
-use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
+use Xgbnl\Guard\Contracts\Guards\GuardContact;
+use Xgbnl\Guard\Contracts\Guards\StatefulGuard;
+use Xgbnl\Guard\Contracts\Guards\ValidatorGuard;
 
 interface Factory
 {

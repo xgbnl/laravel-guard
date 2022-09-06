@@ -6,8 +6,8 @@ namespace Xgbnl\Guard\Guards;
 
 use http\Exception\RuntimeException;
 use Xgbnl\Guard\Contracts\Authenticatable;
-use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
-use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
+use Xgbnl\Guard\Contracts\Guards\StatefulGuard;
+use Xgbnl\Guard\Contracts\Guards\ValidatorGuard;
 use Xgbnl\Guard\Traits\GuardTrait;
 
 class Guard extends BaseGuard implements StatefulGuard, ValidatorGuard

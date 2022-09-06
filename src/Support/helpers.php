@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Xgbnl\Guard\Contracts\Factory;
-use Xgbnl\Guard\Contracts\Guard\ValidatorGuard;
-use Xgbnl\Guard\Contracts\Guard\GuardContact;
-use Xgbnl\Guard\Contracts\Guard\StatefulGuard;
+use Xgbnl\Guard\Contracts\Guards\ValidatorGuard;
+use Xgbnl\Guard\Contracts\Guards\GuardContact;
+use Xgbnl\Guard\Contracts\Guards\StatefulGuard;
 
 if (!function_exists('guard')) {
     /**
