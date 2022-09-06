@@ -30,21 +30,4 @@ trait GuardTrait
     {
         return !$this->check();
     }
-
-    public function validateClientIP(): bool
-    {
-        return $this->validate($this->request->getClientIp());
-    }
-
-    public function validateDevice(): bool
-    {
-        return $this->validate($this->request->userAgent());
-    }
-
-    private function validate(string $needle): bool
-    {
-        $user = $this->token->fetchUser($this->getTokenForRequest());
-
-        return !in_array($needle, $user);
-    }
 }

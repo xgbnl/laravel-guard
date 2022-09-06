@@ -34,24 +34,6 @@ abstract class Authorization
      * @return void
      */
     abstract public function doHandle(): void;
-
-    /**
-     * 验证客户端IP.
-     * @return bool
-     */
-    final protected function validateClientIP(): bool
-    {
-
-    }
-
-    /**
-     * 验证设备.
-     * @return bool
-     */
-    final protected function validateDevice(): bool
-    {
-
-    }
     
     final protected function guard(): GuardContact|ValidatorGuard|StatefulGuard
     {
