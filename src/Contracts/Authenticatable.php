@@ -12,9 +12,9 @@ interface Authenticatable
 
     /**
      * 获取模型标识符
-     * @return mixed
+     * @return string|int
      */
-    public function getModelIdentifier(): mixed;
+    public function getModelIdentifier(): string|int;
 
     /**
      * 获取模型密码

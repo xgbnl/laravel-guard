@@ -6,10 +6,6 @@ use Exception;
 
 final class Generator
 {
-
-    /**
-     * @throws Exception
-     */
     static public function generateToken(int $length = 64): string
     {
         $alphabet = '';
@@ -28,7 +24,7 @@ final class Generator
         return $token;
     }
 
-    static public function generateKey(string $id, string $provider): string
+    static public function generateKey(string|int $id, string $provider): string
     {
         return "auth:{$provider}:{$id}";
     }
