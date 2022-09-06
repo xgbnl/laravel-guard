@@ -18,7 +18,7 @@ trait GuardTrait
 
     public function hasUser(): bool
     {
-        return !is_null($this->user);
+        return !is_null($this->user());
     }
 
     public function check(): bool

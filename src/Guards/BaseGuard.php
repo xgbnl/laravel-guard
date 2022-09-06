@@ -14,8 +14,6 @@ use Xgbnl\Guard\Traits\GuardTrait;
 
 abstract class BaseGuard implements GuardContact
 {
-    use GuardTrait;
-
     protected readonly ModelProvider $provider;
     protected ?Authenticatable       $user = null;
 
