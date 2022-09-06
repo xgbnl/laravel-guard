@@ -10,7 +10,6 @@ use Xgbnl\Guard\Token\Token;
 use Xgbnl\Guard\Contracts\Authenticatable;
 use Xgbnl\Guard\Contracts\Guards\GuardContact;
 use Xgbnl\Guard\Services\ModelProvider;
-use Xgbnl\Guard\Traits\GuardTrait;
 
 abstract class BaseGuard implements GuardContact
 {
