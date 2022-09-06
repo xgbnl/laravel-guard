@@ -11,24 +11,24 @@ class GuardCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'guard:install';
+    protected string $signature = 'guard:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Install custom guard';
+    protected string $description = 'Install custom guard';
 
     /**
      * Execute the console command.
      *
      * @return int
      */
-    public function handle()
+    public function handle(): void
     {
         $this->call('vendor:publish', [
-            "--provider" => "Xgbnl\Guard\Providers\GuardServiceProvider"
+            "--provider" => "Xgbnl\Guard\GuardServiceProvider"
         ]);
     }
 }
