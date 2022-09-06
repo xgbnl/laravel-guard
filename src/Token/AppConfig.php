@@ -57,7 +57,7 @@ class AppConfig
     private function getConfig(string $key): string
     {
         if (empty($this->config[$key])) {
-            throw new RuntimeException($key . '缺少参数,请配置guard.php');
+            throw new RuntimeException('[ '.$key.' ]' . '缺少参数,请配置guard.php');
         }
         return $this->config[$key];
     }
