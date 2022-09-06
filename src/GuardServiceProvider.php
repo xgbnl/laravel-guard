@@ -34,9 +34,10 @@ class GuardServiceProvider extends ServiceProvider
     protected function registerAppConfig(): void
     {
         if (!empty($this->app['config']['guard.security']) && !empty($this->app['config']['guard.expiration'])) {
+
             AppConfig::init()
                 ->configure($this->app['config']['guard.security'])
-                ->configure($this->app['config']['guard.expiration']);
+                ->configure(['expiration' => $this->app['config']['guard.expiration']]);
         }
     }
 
@@ -55,15 +56,10 @@ class GuardServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->publishes([dirname(__DIR__) . '/Config/guard.php' => config_path('guard.php')]);
-        $this->publishes([dirname(__DIR__) . '/Middleware/GuardMiddleware.php' => app_path('Http/Middleware/GuardMiddleware.php')]);
+        $this->publishes([__DIR__ . '/Config/guard.php' => config_path('guard.php')]);
+        $this->publishes([__DIR__ . '/Middleware/GuardMiddleware.php' => app_path('Http/Middleware/GuardMiddleware.php')]);
 
-        $this->installCommand($this->commands);
-    }
-
-    protected function installCommand(array $commands): void
-    {
-        $this->commands($commands);
+        $this->commands($this->commands);
     }
 
     public function provides(): array
