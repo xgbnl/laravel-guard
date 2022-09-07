@@ -10,7 +10,7 @@ trait GuardTrait
     public function authenticate(): Authenticatable
     {
         if (!$this->check()) {
-            throw new RuntimeException('没有经过身份验证,请登录后再试', 401);
+            throw new RuntimeException('无效令牌,无法验证身份,请登录', 401);
         }
 
         return $this->user();
