@@ -18,8 +18,7 @@ class GuardServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerAuthenticator();
-
-        $this->registerAppConfig();
+        $this->registerConfigure();
     }
 
     protected function registerAuthenticator(): void
@@ -27,14 +26,28 @@ class GuardServiceProvider extends ServiceProvider
         $this->app->singleton(Factory::class, fn($app) => new GuardManager($app));
     }
 
-    protected function registerAppConfig(): void
+    protected function registerConfigure(): void
     {
-        if (!empty($this->app['config']['guard.security']) && !empty($this->app['config']['guard.expiration'])) {
+        if ($this->hasGuardConfig()) {
 
-            AppConfig::init()
-                ->configure($this->app['config']['guard.security'])
-                ->configure(['expiration' => $this->app['config']['guard.expiration']]);
+            AppConfig::init()->configure($this->getGuardSecurity())
+                ->configure(['expiration' => $this->getGuardExpiration()]);
         }
+    }
+
+    protected function hasGuardConfig(): bool
+    {
+        return !empty($this->getGuardSecurity()) && !empty($this->getGuardExpiration());
+    }
+
+    protected function getGuardSecurity(): array
+    {
+        return $this->app['config']['guard.security'];
+    }
+
+    protected function getGuardExpiration(): int
+    {
+        return $this->app['config']['guard.expiration'];
     }
 
     /**
