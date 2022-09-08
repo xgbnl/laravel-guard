@@ -37,7 +37,7 @@ abstract class BaseGuard implements GuardContact
     final public function user(string|array $relations = null): Authenticatable|null
     {
         if (!is_null($this->user)) {
-            return $this->user;
+            return empty($relations) ? $this->user : $this->user->fresh($relations);
         }
 
         if (is_null($this->getTokenForRequest())) {
@@ -52,7 +52,7 @@ abstract class BaseGuard implements GuardContact
             return null;
         }
 
-        $user = $this->provider->retrieveById($this->token->resolveIdentifier(),$relations);
+        $user = $this->provider->retrieveById($this->token->resolveIdentifier(), $relations);
 
         return !is_null($user) ? $this->user = $user : null;
     }
