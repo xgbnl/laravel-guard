@@ -40,12 +40,12 @@ class GuardServiceProvider extends ServiceProvider
         return !empty($this->getGuardSecurity()) && !empty($this->getGuardExpiration());
     }
 
-    protected function getGuardSecurity(): array
+    protected function getGuardSecurity(): ?array
     {
         return $this->app['config']['guard.security'];
     }
 
-    protected function getGuardExpiration(): int
+    protected function getGuardExpiration(): ?int
     {
         return $this->app['config']['guard.expiration'];
     }
