@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xgbnl\Guard\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Xgbnl\Guard\Contracts\Factory;
 use Xgbnl\Guard\Contracts\Guards\ValidatorGuard;
@@ -20,7 +21,7 @@ abstract class Authorization
         $this->factory = $factory;
     }
 
-    public function handle(Request $request, \Closure $next, string $role)
+    public function handle(Request $request, Closure $next, string $role)
     {
         $this->guard = $this->factory->guard($role);
 
@@ -31,9 +32,12 @@ abstract class Authorization
 
     /**
      * 抽象处理方法.
+     * @param Request $request
+     * @param Closure $next
+     * @param string $role
      * @return void
      */
-    abstract public function doHandle(): void;
+    abstract public function doHandle(Request $request, Closure $next, string $role): void;
     
     final protected function guard(): GuardContact|ValidatorGuard|StatefulGuard
     {
