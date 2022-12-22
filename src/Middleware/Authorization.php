@@ -13,7 +13,7 @@ use Xgbnl\Guard\Contracts\Guards\StatefulGuard;
 
 abstract class Authorization
 {
-    private readonly Factory                                        $factory;
+    private readonly Factory $factory;
     private GuardContact|ValidatorGuard|StatefulGuard|null $guard = null;
 
     final public function __construct(Factory $factory)
@@ -25,9 +25,7 @@ abstract class Authorization
     {
         $this->guard = $this->factory->guard($role);
 
-        $this->doHandle($request,$next,$role);
-
-        return $next($request);
+        return $this->doHandle($request, $next, $role);
     }
 
     /**
@@ -35,10 +33,9 @@ abstract class Authorization
      * @param Request $request
      * @param Closure $next
      * @param string $role
-     * @return void
      */
-    abstract public function doHandle(Request $request, Closure $next, string $role): void;
-    
+    abstract public function doHandle(Request $request, Closure $next, string $role);
+
     final protected function guard(): GuardContact|ValidatorGuard|StatefulGuard
     {
         return $this->guard;
