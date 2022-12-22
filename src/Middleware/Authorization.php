@@ -25,7 +25,7 @@ abstract class Authorization
     {
         $this->guard = $this->factory->guard($role);
 
-        $this->doHandle();
+        $this->doHandle($request,$next,$role);
 
         return $next($request);
     }
