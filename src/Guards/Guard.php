@@ -9,6 +9,7 @@ use Xgbnl\Guard\Contracts\Authenticatable;
 use Xgbnl\Guard\Contracts\Guards\StatefulGuard;
 use Xgbnl\Guard\Contracts\Guards\ValidatorGuard;
 use Xgbnl\Guard\Traits\GuardTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class Guard extends BaseGuard implements StatefulGuard, ValidatorGuard
 {
@@ -23,7 +24,7 @@ class Guard extends BaseGuard implements StatefulGuard, ValidatorGuard
         $this->token->forget();
     }
 
-    public function login(Authenticatable $user): array
+    public function login(Authenticatable|Model $user): array
     {
         return $this->token->dispatch($user);
     }
