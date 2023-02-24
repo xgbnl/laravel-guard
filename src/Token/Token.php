@@ -93,11 +93,11 @@ class Token
         $token = $this->guard->getTokenForRequest();
 
         if ($token === 'null') {
-            throw new \RuntimeException('无效令牌访问', 401);
+            throw new RuntimeException('无效令牌访问', 401);
         }
 
         if (empty($token) || empty(explode('.', $this->guard->getTokenForRequest())) ) {
-            throw new \RuntimeException('令牌不能为空', 401);
+            throw new RuntimeException('令牌不能为空', 401);
         }
 
         $result = array_combine(['header', 'token'], explode('.', $this->guard->getTokenForRequest()));
