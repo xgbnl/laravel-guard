@@ -24,7 +24,7 @@ class Token
         try {
             $this->client = FacadeRedis::connection($connect)->client();
         } catch (RedisException $e) {
-            throw new RuntimeException('初始化redis时错误[ ' . $e->getMessage() . ' ]请检查您的配置', 500);
+            throw new RuntimeException('守卫器redis配置错误', 500);
         }
     }
 
@@ -90,8 +90,14 @@ class Token
      */
     public function parseEncryptionToken(string $apply = 'header'): string
     {
-        if (empty($this->guard->getTokenForRequest() || empty(explode('.', $this->guard->getTokenForRequest())))) {
-            $this->resolveError();
+        $token = $this->guard->getTokenForRequest();
+
+        if ($token === 'null') {
+            throw new \RuntimeException('无效令牌访问', 401);
+        }
+
+        if (empty($token) || empty(explode('.', $this->guard->getTokenForRequest())) ) {
+            throw new \RuntimeException('令牌不能为空', 401);
         }
 
         $result = array_combine(['header', 'token'], explode('.', $this->guard->getTokenForRequest()));
@@ -114,6 +120,6 @@ class Token
 
     private function resolveError()
     {
-        throw new RuntimeException('无效令牌访问，请登录', 401);
+        throw new RuntimeException('令牌已失效，请重新登录', 401);
     }
 }

@@ -29,7 +29,7 @@
         "Xgbnl\\Guard\\GuardServiceProvider"
       ],
       "aliases": {
-        "guard": "Xgbnl\\Guard\\GuardFacade"
+        "guard": "Xgbnl\\Guard\\Guard"
       }
     }
   }
