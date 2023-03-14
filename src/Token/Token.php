@@ -52,7 +52,7 @@ class Token
      */
     public function dispatch(Authenticatable $user): array
     {
-        $key   = Generator::generateKey($user->getModelIdentifier(), $this->guard->provider()->getProviderName());
+        $key = Generator::generateKey($user->getModelIdentifier(), $this->guard->provider()->getProviderName());
         $token = Generator::generateToken();
 
         $this->client->setex($key, AppConfig::init()->getExpiration(), $token);
@@ -92,11 +92,11 @@ class Token
     {
         $token = $this->guard->getTokenForRequest();
 
-        if ($token === 'null') {
-            throw new RuntimeException('无效令牌访问', 401);
+        if ($this->includes($token)) {
+            throw new RuntimeException('令牌无效,请检查token值', 401);
         }
 
-        if (empty($token) || empty(explode('.', $this->guard->getTokenForRequest())) ) {
+        if (empty($token) || empty(explode('.', $this->guard->getTokenForRequest()))) {
             throw new RuntimeException('令牌不能为空', 401);
         }
 
@@ -121,5 +121,10 @@ class Token
     private function resolveError()
     {
         throw new RuntimeException('令牌已失效，请重新登录', 401);
+    }
+
+    protected function includes(mixed $value): bool
+    {
+        return in_array($value, ['null', 'undefined', '', false, 'false', 0, '0']);
     }
 }
